@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import CarbonEmissionReportScreen from '../../screens/Driving/CarbonEmissionReportScreen';
 import { CARBON_COLORS } from '../../theme/colors';
-import useEcoReportStore from '../../stores/useEcoReportStore';
+import useEcoReportStore from '../../store/useEcoReportStore';
 
 // 탭 옵션
 const TABS = ['공회전', '정속주행비율'];
