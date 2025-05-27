@@ -45,7 +45,7 @@ const DrivingTimePanel: React.FC<DrivingTimePanelProps> = ({
           
           <View style={styles.progressContainer}>
             <Text style={styles.progressTitle}>
-              4시간 권장 운전 시간 대비 ({totalDrivingHours.toFixed(1)}/4시간)
+              2시간 권장 운전 시간 대비 ({totalDrivingHours.toFixed(1)}/2시간)
             </Text>
             <HorizontalProgressBar
               progress={session?.progress || 0}
@@ -68,7 +68,7 @@ const DrivingTimePanel: React.FC<DrivingTimePanelProps> = ({
               <View style={styles.progressInfo}>
                 <Icon name="info" size={16} color={colors.chart.blue} />
                 <Text style={[styles.progressInfoText, {color: colors.text.secondary}]}>
-                  한 번에 4시간 이상 운전 시 휴식이 필요합니다.
+                  한 번에 2시간 이상 운전 시 휴식이 필요합니다.
                 </Text>
               </View>
             </View>
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   safetyGuideContainer: {
-    width: '90%',
+    width: '108%',
     padding: 16,
     backgroundColor: 'rgba(104, 211, 146, 0.1)',
     borderRadius: 12,

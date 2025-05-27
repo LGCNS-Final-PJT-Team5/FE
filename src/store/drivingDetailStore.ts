@@ -45,7 +45,8 @@ export const useDrivingDetailStore = create<DrivingDetailState>((set) => ({
     try {
       set({ isLoading: true, error: null });
       
-      const response = await axios.get(`${env.API_URL}/dashboard/post-drive/${driveId}`, {
+      // 올바른 API URL 참조 방식으로 변경
+      const response = await axios.get(env.API.DRIVING.DETAIL(driveId), {
         headers: {
           'X-User-Id': userId
         }
