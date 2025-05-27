@@ -8,6 +8,7 @@ import DashboardHeader from '../../components/Dashboard/DashboardHeader';
 import {DashboardResponse, HomeStackParamList} from '../../types/dashboard';
 import {UserResponse} from '../../types/user';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import AppText from '../../components/common/AppText';
 
 type DashboardScreenProps = {
   drivingReportData: DrivingScoreCardProps[];

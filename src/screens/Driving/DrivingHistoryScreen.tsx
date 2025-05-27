@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native';
 import DrivingHistoryItem from '../../components/Driving/DrivingHistoryItem';
 import DrivingHistoryChart from '../../components/Driving/DrivingHistoryChart';
 import { DriveHistoryItem } from '../../types/driving';
 import { colors } from '../../theme/colors';
+import AppText from '../../components/common/AppText';
 
 interface DrivingHistoryScreenProps {
   driveHistory: DriveHistoryItem[];
@@ -24,7 +25,7 @@ const DrivingHistoryScreen: React.FC<DrivingHistoryScreenProps> = ({
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>데이터를 불러오는 중...</Text>
+          <AppText style={styles.loadingText}>데이터를 불러오는 중...</AppText>
         </View>
       </SafeAreaView>
     );
@@ -34,7 +35,7 @@ const DrivingHistoryScreen: React.FC<DrivingHistoryScreenProps> = ({
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
+          <AppText style={styles.errorText}>{error}</AppText>
         </View>
       </SafeAreaView>
     );
@@ -45,20 +46,20 @@ const DrivingHistoryScreen: React.FC<DrivingHistoryScreenProps> = ({
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
       
       <View style={styles.container}>   
-        <Text style={styles.title}>주행 히스토리</Text>
-        <Text style={styles.subtitle}>지금까지의 주행 데이터를 확인해 보세요</Text>
+        <AppText bold style={styles.title}>주행 히스토리</AppText>
+        <AppText style={styles.subtitle}>지금까지의 주행 데이터를 확인해 보세요</AppText>
         
         {(driveHistory?.length ?? 0) === 0 && (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>아직 주행 기록이 없어요</Text>
+            <AppText style={styles.emptyText}>아직 주행 기록이 없어요</AppText>
           </View>
         )}
         
         <DrivingHistoryChart />
         
         <View style={styles.listHeaderContainer}>
-          <Text style={styles.listHeaderLeft}>주행일시</Text>
-          <Text style={styles.listHeaderRight}>주행점수</Text>
+          <AppText style={styles.listHeaderLeft}>주행일시</AppText>
+          <AppText style={styles.listHeaderRight}>주행점수</AppText>
         </View>
         
         <View style={styles.historyListContainer}>
@@ -93,15 +94,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontFamily: 'Pretendard-Bold',
+    // fontFamily: 'Pretendard-Bold',
     fontSize: 34,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     color: colors.primary,
     marginBottom: 8,
     marginTop: 20,
   },
   subtitle: {
-    fontFamily: 'Pretendard-Regular',
+    // fontFamily: 'Pretendard-Regular',
     fontSize: 14,
     color: colors.neutralDark,
     marginBottom: 20,
@@ -122,13 +123,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   listHeaderLeft: {
-    fontFamily: 'Pretendard-Medium',
+    // fontFamily: 'Pretendard-Medium',
     fontSize: 15,
     color: '#000000',
     marginLeft: 77,
   },
   listHeaderRight: {
-    fontFamily: 'Pretendard-Medium',
+    // fontFamily: 'Pretendard-Medium',
     fontSize: 15,
     color: '#000000',
     marginRight: 20,
