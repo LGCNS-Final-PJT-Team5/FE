@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import CarbonEmissionReportScreen from '../../screens/Driving/CarbonEmissionReportScreen';
 import { CARBON_COLORS } from '../../theme/colors';
+import useEcoReportStore from '../../stores/useEcoReportStore';
 
 // 탭 옵션
 const TABS = ['공회전', '정속주행비율'];
@@ -11,8 +12,8 @@ const TABS = ['공회전', '정속주행비율'];
  */
 const CarbonEmissionReportContainer: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [selectedTab, setSelectedTab] = useState(TABS[0]);
-  const [loading, setLoading] = useState(true);
   
   // 상태값들
   const [score, setScore] = useState(0);
@@ -23,93 +24,66 @@ const CarbonEmissionReportContainer: React.FC = () => {
   const [totalIdlingMinutes, setTotalIdlingMinutes] = useState(0);
   const [idlingFeedback, setIdlingFeedback] = useState('');
   const [speedMaintainFeedback, setSpeedMaintainFeedback] = useState('');
+  
+  // Zustand 스토어에서 데이터 가져오기
+  const { data, loading, error, fetchEcoReport } = useEcoReportStore();
+  
+  // driveId는 route params에서 가져오거나 기본값 사용
+  const driveId = route.params?.driveId || '1';
 
   // API 데이터 가져오기
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        
-        // 실제 앱에서는 API 호출하지만 여기서는 모의 데이터 사용
-        setTimeout(() => {
-          // 모의 데이터
-          const mockData = {
-            score: 82.5,
-            idling: {
-              score: 100.0,
-              feedback: "공회전 시간이 적어 연료 소비와 탄소 배출이 최소화되었습니다. 이대로 유지하세요!",
-              graph: [
-                { startTime: "2025-04-25T08:10:00Z", endTime: "2025-04-25T08:12:00Z" },
-                { startTime: "2025-04-25T08:20:00Z", endTime: "2025-04-25T08:22:00Z" },
-                { startTime: "2025-04-25T08:30:00Z", endTime: "2025-04-25T08:32:00Z" },
-                { startTime: "2025-04-25T08:40:00Z", endTime: "2025-04-25T08:42:00Z" },
-                { startTime: "2025-04-25T08:50:00Z", endTime: "2025-04-25T08:52:00Z" }
-              ]
-            },
-            speedMaintain: {
-              score: 65.0,
-              feedback: "일정한 속도 유지 비율이 양호합니다. 급가속과 급감속을 줄이면 연비 효율이 더 좋아집니다.",
-              graph: [
-                { tag: "high", ratio: 10 },
-                { tag: "middle", ratio: 65 },
-                { tag: "low", ratio: 25 }
-              ]
-            }
-          };
+    fetchEcoReport(driveId);
+  }, [driveId]);
 
-          // 데이터 처리
-          setScore(mockData.score);
-          setIdlingScore(mockData.idling.score);
-          setSpeedMaintainScore(mockData.speedMaintain.score);
-          
-          // 공회전 이벤트 처리
-          const processedIdlingEvents = mockData.idling.graph.map((item, index) => {
-            const start = new Date(item.startTime);
-            const end = new Date(item.endTime);
-            const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
-            
-            return {
-              id: index.toString(),
-              label: `구간 ${index + 1}`,
-              startTime: formatTime(item.startTime),
-              endTime: formatTime(item.endTime),
-              duration: durationMinutes,
-              value: durationMinutes,
-            };
-          });
-          
-          setIdlingEvents(processedIdlingEvents);
-          setTotalIdlingMinutes(processedIdlingEvents.reduce((sum, item) => sum + item.duration, 0));
-          
-          // 정속 주행 데이터 처리
-          const tagMapping = { 'high': '고속', 'middle': '중속', 'low': '저속' };
-          const colorMapping = {
-            'high': CARBON_COLORS.chart.highSpeed,
-            'middle': CARBON_COLORS.chart.midSpeed,
-            'low': CARBON_COLORS.chart.lowSpeed
-          };
-          
-          const processedSpeedData = mockData.speedMaintain.graph.map(item => ({
-            value: item.ratio,
-            label: tagMapping[item.tag] || item.tag,
-            color: colorMapping[item.tag] || CARBON_COLORS.primary,
-          }));
-          
-          setSpeedMaintainData(processedSpeedData);
-          setIdlingFeedback(mockData.idling.feedback);
-          setSpeedMaintainFeedback(mockData.speedMaintain.feedback);
-          
-          setLoading(false);
-        }, 500);
+  // API 데이터 처리
+  useEffect(() => {
+    if (data) {
+      // 기본 점수 데이터 설정
+      setScore(data.score);
+      setIdlingScore(data.idling.score);
+      setSpeedMaintainScore(data.speedMaintain.score);
+      setIdlingFeedback(data.idling.feedback);
+      setSpeedMaintainFeedback(data.speedMaintain.feedback);
+      
+      // 공회전 이벤트 처리
+      const processedIdlingEvents = data.idling.graph.map((item, index) => {
+        const start = new Date(item.startTime);
+        const end = new Date(item.endTime);
+        const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
         
-      } catch (error) {
-        console.error('데이터 로딩 오류:', error);
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, []);
+        return {
+          id: index.toString(),
+          label: `구간 ${index + 1}`,
+          startTime: formatTime(item.startTime),
+          endTime: formatTime(item.endTime),
+          duration: durationMinutes,
+          value: durationMinutes,
+        };
+      });
+      
+      setIdlingEvents(processedIdlingEvents);
+      setTotalIdlingMinutes(
+        Number(processedIdlingEvents.reduce((sum, item) => sum + item.duration, 0).toFixed(1))
+      );
+      
+      // 정속 주행 데이터 처리
+      const tagMapping = { 'high': '고속', 'middle': '중속', 'low': '저속' };
+      const colorMapping = {
+        'high': CARBON_COLORS.chart.highSpeed,
+        'middle': CARBON_COLORS.chart.midSpeed,
+        'low': CARBON_COLORS.chart.lowSpeed
+      };
+      
+      const processedSpeedData = data.speedMaintain.graph.map(item => ({
+        value: item.ratio,
+        label: tagMapping[item.tag] || item.tag,
+        color: colorMapping[item.tag] || CARBON_COLORS.primary,
+      }));
+      
+      setSpeedMaintainData(processedSpeedData);
+    }
+  }, [data]);
 
   // 시간 포맷팅 함수
   const formatTime = (timeString) => {
@@ -142,6 +116,7 @@ const CarbonEmissionReportContainer: React.FC = () => {
       totalIdlingMinutes={totalIdlingMinutes}
       onTabChange={handleTabChange}
       onBackPress={handleBackPress}
+      error={error}
     />
   );
 };

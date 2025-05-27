@@ -10,13 +10,9 @@ import {
 } from 'react-native';
 import { CARBON_COLORS } from '../../theme/colors';
 import { IdlingEvent, SpeedMaintainItem } from '../../types/report';
-
-// 기존 컴포넌트 활용
 import ReportHeaderSection from '../../components/Driving/ReportHeaderSection';
 import FeedbackMessage from '../../components/Driving/FeedbackMessage';
 import TabSelector from '../../components/common/TabSelector';
-
-// 새 차트 컴포넌트 활용
 import IdlingBarChart from '../../components/Driving/IdlingBarChart';
 import SpeedDistributionPieChart from '../../components/Driving/SpeedDistributionPieChart';
 
@@ -32,6 +28,7 @@ interface CarbonEmissionReportScreenProps {
   idlingFeedback: string;
   speedMaintainFeedback: string;
   totalIdlingMinutes: number;
+  error: string | null;
   onTabChange: (tab: string) => void;
   onBackPress: () => void;
 }
@@ -48,6 +45,7 @@ const CarbonEmissionReportScreen: React.FC<CarbonEmissionReportScreenProps> = ({
   idlingFeedback,
   speedMaintainFeedback,
   totalIdlingMinutes,
+  error,
   onTabChange,
   onBackPress
 }) => {
@@ -112,6 +110,19 @@ const CarbonEmissionReportScreen: React.FC<CarbonEmissionReportScreenProps> = ({
 
   // 선택된 탭 컨텐츠 렌더링
   const renderContent = () => {
+    if (error) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>
+            {error}
+          </Text>
+          <Text style={styles.errorSubText}>
+            네트워크 연결을 확인하고 다시 시도해주세요.
+          </Text>
+        </View>
+      );
+    }
+    
     switch (selectedTab) {
       case '공회전':
         return renderIdlingContent();
@@ -222,6 +233,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     fontWeight: '500',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    height: 200,
+  },
+  errorText: {
+    fontSize: 16,
+    color: CARBON_COLORS.error,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  errorSubText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   }
 });
 

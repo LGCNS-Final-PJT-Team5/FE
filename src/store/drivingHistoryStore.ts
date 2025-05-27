@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { DriveHistoryItem } from '../types/driving';
+import { Platform } from 'react-native';
 
 interface DrivingHistoryState {
   driveHistory: DriveHistoryItem[];
@@ -19,13 +20,22 @@ export const useDrivingHistoryStore = create<DrivingHistoryState>((set, get) => 
     try {
       set({ isLoading: true, error: null });
       
-      const API_URL = __DEV__ 
-        ? 'http://10.0.2.2:8080/dashboard/post-drive'
+      // 디버깅 메시지 추가
+      console.log("=== 네트워크 요청 시작 ===");
+      
+      // 플랫폼별 URL 설정
+      const API_URL = __DEV__ ?
+        (Platform.OS === 'ios'
+           ? 'http://192.168.0.241:8080/dashboard/post-drive'
+           : 'http://192.168.0.241:8080/dashboard/post-drive')
         : 'https://api.yourproductionurl.com/dashboard/post-drive';
-
-      // 전체 응답 객체 확인 (더 많은 정보를 볼 수 있음)
+      
+      console.log(`플랫폼: ${Platform.OS}, API URL: ${API_URL}`);
+      
+      // 2. 타임아웃 설정 추가 (5초)
       const response = await axios.get(API_URL, {
-        headers: { 'X-User-Id': '1' }
+        headers: { 'X-User-Id': '1' },
+        timeout: 5000
       });
       
       console.log("API 응답 전체:", JSON.stringify(response));
@@ -59,17 +69,27 @@ export const useDrivingHistoryStore = create<DrivingHistoryState>((set, get) => 
     } catch (error) {
       console.error("Failed to fetch drive history:", error);
       
-      // 더 구체적인 에러 메시지 제공
+      // 명시적으로 로딩 상태 해제 (중요!)
+      set({ isLoading: false });
+      
+      // 에러 상세 정보 제공
       if (axios.isAxiosError(error)) {
-        if (error.code === 'ECONNABORTED') {
-          set({ error: "요청 시간이 초과되었습니다. 네트워크를 확인해주세요.", isLoading: false });
-        } else if (error.code === 'ERR_NETWORK') {
-          set({ error: "서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.", isLoading: false });
+        // 요청 실패한 URL 로깅
+        console.error("요청 실패한 URL:", error.config?.url);
+        console.error("요청 헤더:", error.config?.headers);
+        
+        if (error.response) {
+          // 서버에서 응답이 왔지만 오류 상태 코드
+          set({ error: `서버 오류: ${error.response.status} - ${error.response.statusText}` });
+        } else if (error.request) {
+          // 요청은 보냈지만 응답이 없음 (네트워크 문제)
+          set({ error: "서버로부터 응답이 없습니다. 네트워크 연결을 확인해주세요." });
         } else {
-          set({ error: `API 오류: ${error.message}`, isLoading: false });
+          // 요청 설정 자체에 문제
+          set({ error: `요청 오류: ${error.message}` });
         }
       } else {
-        set({ error: "알 수 없는 오류가 발생했습니다", isLoading: false });
+        set({ error: "알 수 없는 오류가 발생했습니다" });
       }
     }
   },

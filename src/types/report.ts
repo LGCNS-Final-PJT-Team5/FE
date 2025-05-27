@@ -249,3 +249,32 @@ export type DrivingRecommendations = {
   tips: DrivingTip[];
 };
 
+// 기존 타입 확장
+
+// 공회전 이벤트 원본 타입
+export interface IdlingEventRaw {
+  startTime: string;
+  endTime: string;
+}
+
+// 속도 유지 데이터 원본 타입
+export interface SpeedMaintainItemRaw {
+  tag: string;
+  ratio: number;
+}
+
+// API 응답 타입
+export interface EcoReportResponse {
+  score: number;
+  idling: {
+    score: number;
+    feedback: string;
+    graph: IdlingEventRaw[];
+  };
+  speedMaintain: {
+    score: number;
+    feedback: string;
+    graph: SpeedMaintainItemRaw[];
+  };
+}
+
