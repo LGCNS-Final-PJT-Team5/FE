@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import env from '../config/env';
 import { DriveHistoryItem } from '../types/driving';
-import { Platform } from 'react-native';
 
 interface DrivingHistoryState {
   driveHistory: DriveHistoryItem[];
@@ -22,18 +22,10 @@ export const useDrivingHistoryStore = create<DrivingHistoryState>((set, get) => 
       
       // 디버깅 메시지 추가
       console.log("=== 네트워크 요청 시작 ===");
-      
-      // 플랫폼별 URL 설정
-      const API_URL = __DEV__ ?
-        (Platform.OS === 'ios'
-           ? 'http://192.168.0.241:8080/dashboard/post-drive'
-           : 'http://192.168.0.241:8080/dashboard/post-drive')
-        : 'https://api.yourproductionurl.com/dashboard/post-drive';
-      
-      console.log(`플랫폼: ${Platform.OS}, API URL: ${API_URL}`);
+      console.log(`API URL: ${env.API.DRIVING.HISTORY}`);
       
       // 2. 타임아웃 설정 추가 (5초)
-      const response = await axios.get(API_URL, {
+      const response = await axios.get(env.API.DRIVING.HISTORY, {
         headers: { 'X-User-Id': '1' },
         timeout: 5000
       });
@@ -97,9 +89,5 @@ export const useDrivingHistoryStore = create<DrivingHistoryState>((set, get) => 
   getDriveDetail: async (driveId: string) => {
     const { driveHistory } = get();
     return driveHistory.find(item => item.driveId === driveId);
-    
-    // 필요한 경우 개별 드라이브 상세 정보를 위한 API 호출 추가
-    // const response = await axios.get(`http://localhost:8080/dashboard/drive/${driveId}`);
-    // return response.data;
   }
 }));

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import env from '../config/env';
 
 // 타입 정의
 interface IdlingEvent {
@@ -33,9 +34,6 @@ interface EcoReportState {
   fetchEcoReport: (driveId: string) => Promise<void>;
 }
 
-// API 기본 URL
-const API_BASE_URL = 'http://192.168.0.241:8080';
-
 // Zustand 스토어 생성
 const useEcoReportStore = create<EcoReportState>((set) => ({
   data: null,
@@ -49,7 +47,7 @@ const useEcoReportStore = create<EcoReportState>((set) => ({
       
       // API 호출
       const response = await axios.get(
-        `${API_BASE_URL}/dashboard/post-drive/${driveId}/eco`,
+        env.API.DRIVING.ECO_REPORT(driveId),
         {
           headers: {
             'X-User-Id': '1', // 사용자 ID 헤더 추가

@@ -40,8 +40,7 @@ const useAccidentPreventionStore = create<AccidentPreventionReportState>((set) =
     try {
       set({ loading: true, error: null });
       
-      // env.ts 파일에 정의된 API URL 사용
-      const response = await axios.get(`${env.API.BASE_URL}/dashboard/post-drive/${driveId}/prevention`, {
+      const response = await axios.get(env.API.DRIVING.PREVENTION_REPORT(driveId), {
         headers: {
           'X-User-Id': '1' // 사용자 ID 추가
         }

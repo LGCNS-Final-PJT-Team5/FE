@@ -64,6 +64,8 @@ const CarbonEmissionReportScreen: React.FC<CarbonEmissionReportScreenProps> = ({
   // 공회전 탭 렌더링
   const renderIdlingContent = () => {
     const scoreText = idlingScore.toFixed(1);
+    // totalIdlingMinutes가 유효한 숫자인지 확인
+    const displayMinutes = isNaN(totalIdlingMinutes) ? 0 : totalIdlingMinutes;
     
     return (
       <View style={styles.contentBlock}>
@@ -71,13 +73,15 @@ const CarbonEmissionReportScreen: React.FC<CarbonEmissionReportScreenProps> = ({
           {scoreText} 점
         </Text>
         <Text style={styles.contentDesc}>
-          총 공회전 시간: {totalIdlingMinutes} 분
+          총 공회전 시간: {displayMinutes} 분
         </Text>
 
         {/* 분리된 IdlingBarChart 컴포넌트 사용 */}
         <IdlingBarChart 
-          events={idlingEvents} 
+          events={idlingEvents}
           title="공회전 시간대 분석" 
+          totalIdlingMinutes={displayMinutes}
+          score={idlingScore} // 추가
         />
       </View>
     );

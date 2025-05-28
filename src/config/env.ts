@@ -5,7 +5,7 @@ const BASE_URL = __DEV__
   ? (Platform.OS === 'ios'
      ? 'http://192.168.0.241:8080'
      : 'http://192.168.0.241:8080')
-  : 'https://api.yourproductionurl.com';
+  : 'https://modive.site';
 
 // API 경로 및 엔드포인트 정의
 const API = {

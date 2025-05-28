@@ -30,10 +30,10 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   const navigation = useNavigation();
 
   const menuItems = [
+    { id: 'carbon', title: '탄소 배출 및 연비 점수', route: 'CarbonEmissionReport', color: '#007AFF' },
+    { id: 'safety', title: '안전운전 점수', route: 'SafetyReport', color: '#4ECD7B' },
     { id: 'accident', title: '사고 예방 점수', route: 'AccidentPreventionReport', color: '#BB27FF' },
     { id: 'attention', title: '주의력 점수', route: 'AttentionScoreReport', color: '#FFD927' },
-    { id: 'safety', title: '안전운전 점수', route: 'SafetyReport', color: '#4ECD7B' },
-    { id: 'carbon', title: '탄소 배출 및 연비 점수', route: 'CarbonEmissionReport', color: '#007AFF' },
   ];
 
   const toggleDropdown = () => {

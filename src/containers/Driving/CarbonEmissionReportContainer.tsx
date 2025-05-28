@@ -50,22 +50,25 @@ const CarbonEmissionReportContainer: React.FC = () => {
       const processedIdlingEvents = data.idling.graph.map((item, index) => {
         const start = new Date(item.startTime);
         const end = new Date(item.endTime);
-        const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+        const durationMs = end.getTime() - start.getTime();
+        const durationSeconds = durationMs / 1000; // 초 단위로 계산
         
         return {
           id: index.toString(),
           label: `구간 ${index + 1}`,
-          startTime: formatTime(item.startTime),
-          endTime: formatTime(item.endTime),
-          duration: durationMinutes,
-          value: durationMinutes,
+          startTime: item.startTime, // 원본 ISO 시간 문자열 그대로 전달
+          endTime: item.endTime,     // 원본 ISO 시간 문자열 그대로 전달
+          formattedStartTime: formatTime(item.startTime), // 표시용 포맷팅 시간
+          formattedEndTime: formatTime(item.endTime),     // 표시용 포맷팅 시간
+          durationSeconds: durationSeconds, // 초 단위 지속 시간
+          durationMinutes: durationSeconds / 60, // 분 단위 지속 시간
         };
       });
       
       setIdlingEvents(processedIdlingEvents);
-      setTotalIdlingMinutes(
-        Number(processedIdlingEvents.reduce((sum, item) => sum + item.duration, 0).toFixed(1))
-      );
+      // durationMinutes 프로퍼티를 사용하여 총 시간 계산
+      const totalMinutes = processedIdlingEvents.reduce((sum, item) => sum + item.durationMinutes, 0);
+      setTotalIdlingMinutes(Number(totalMinutes.toFixed(1)));
       
       // 정속 주행 데이터 처리
       const tagMapping = { 'high': '고속', 'middle': '중속', 'low': '저속' };
@@ -85,10 +88,20 @@ const CarbonEmissionReportContainer: React.FC = () => {
     }
   }, [data]);
 
-  // 시간 포맷팅 함수
+  // 시간 포맷팅 함수 - 초 단위 포함
   const formatTime = (timeString) => {
-    const date = new Date(timeString);
-    return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+    try {
+      const date = new Date(timeString);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const seconds = date.getSeconds().toString().padStart(2, '0');
+      
+      // 시:분:초 형식으로 반환
+      return `${hours}:${minutes}:${seconds}`;
+    } catch (e) {
+      console.error('시간 변환 오류:', e, timeString);
+      return '00:00:00';
+    }
   };
 
   // 탭 선택 핸들러
