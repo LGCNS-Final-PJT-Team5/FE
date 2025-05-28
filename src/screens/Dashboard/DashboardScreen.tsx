@@ -14,7 +14,7 @@ type DashboardScreenProps = {
   drivingReportData: DrivingScoreCardProps[];
   userInfo: UserResponse;
   isEnabled: boolean;
-  toggleSwitch: () => void;
+  setIsEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   dashboard: DashboardResponse;
   navigation: NativeStackNavigationProp<HomeStackParamList>;
 };
@@ -23,7 +23,7 @@ export default function DashboardScreen({
   drivingReportData,
   userInfo,
   isEnabled,
-  toggleSwitch,
+  setIsEnabled,
   dashboard,
   navigation,
 }: DashboardScreenProps) {
@@ -40,7 +40,7 @@ export default function DashboardScreen({
           <DashboardHeader
             userInfo={userInfo}
             isEnabled={isEnabled}
-            toggleSwitch={toggleSwitch}
+            setIsEnabled={setIsEnabled}
             dashboard={dashboard}
           />
         </>

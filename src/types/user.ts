@@ -1,14 +1,9 @@
 export type UserResponse = {
-  userId: number;
   reward: number;
   nickname: string;
   name: string;
   email: string | null;
-  birthdate: string | null;
-  licenseDate: string | null;
   alarm: boolean;
-  gender: 'male' | 'female' | null;
-  phone: string | null;
 };
 
 export interface LoginWithKakaoRequest {
@@ -16,11 +11,18 @@ export interface LoginWithKakaoRequest {
 }
 
 export interface TokenRefreshRequest {
-  accessToken: string;
   refreshToken: string;
 }
 
 export interface TokenRefreshResponse {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface RegisterRequest {
+  accessToken: string;
+  nickname: string;
+  drivingExperience: number;
+  carNumber: string;
+  interest: string;
 }

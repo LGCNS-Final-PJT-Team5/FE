@@ -1,5 +1,8 @@
 export type RootStackParamList = {
-    Home: undefined; // 탭 이름
+    Main: undefined;
+    Home: undefined;
+    Register: undefined;
+    Login: undefined;
     Dashboard: undefined;
     Feedback: undefined;
     DrivingHistory: undefined;
@@ -14,5 +17,4 @@ export type RootStackParamList = {
     MypageCar: undefined;
     MypageInfo: undefined;
     MypageInterest: undefined;
-    login: undefined;
 };

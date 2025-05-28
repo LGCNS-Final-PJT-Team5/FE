@@ -17,8 +17,8 @@ const SeedsHistoryItem = ({item}: {item: SeedHistoryRawItem}) => {
         <Text style={styles.cardSub}>{formatTime(item.createdAt)}</Text>
       </View>
       <View style={styles.cardRight}>
-        <Text style={item.type === '적립' ? styles.plus : styles.minus}>
-          {item.type === '적립' ? '+' : '-'}
+        <Text style={item.type === 'EARNED' ? styles.plus : styles.minus}>
+          {item.type === 'EARNED' ? '+' : '-'}
           {item.amount}
         </Text>
         <Text style={styles.cardSub}>{item.balanceSnapshot}</Text>

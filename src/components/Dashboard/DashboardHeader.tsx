@@ -11,14 +11,14 @@ import {DashboardResponse} from '../../types/dashboard';
 export type DashboardHeaderProps = {
   userInfo: UserResponse;
   isEnabled: boolean;
-  toggleSwitch: () => void;
+  setIsEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   dashboard: DashboardResponse;
 };
 
 export default function DashboardHeader({
   userInfo,
   isEnabled,
-  toggleSwitch,
+  setIsEnabled,
   dashboard,
 }: DashboardHeaderProps) {
   const driveInfoItems = [
@@ -34,7 +34,10 @@ export default function DashboardHeader({
         <MaterialCommunityIcons name="chart-bell-curve-cumulative" size={15} />
       ),
       label: '누적 운전 횟수',
-      value: dashboard?.driveCount ? `${dashboard.driveCount}회` : '-',
+      value:
+        dashboard?.driveCount !== undefined && dashboard?.driveCount !== null
+          ? `${dashboard.driveCount}회`
+          : '-',
     },
   ];
 
@@ -43,7 +46,7 @@ export default function DashboardHeader({
       <ProfileHeader
         userInfo={userInfo}
         isEnabled={isEnabled}
-        toggleSwitch={toggleSwitch}
+        setIsEnabled={setIsEnabled}
       />
       <MobtiBox dashboard={dashboard} />
       <DriveInfoGroup items={driveInfoItems} />

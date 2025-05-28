@@ -1,36 +1,20 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+import Logo from '../../assets/modive_logo.svg';
 
 export default function LoadingScreen() {
-    return (
-        <View>
-            <Image
-                style={styles.image}
-                source={require('../../assets/modive_logo3.png')}
-            />
-            <View style={styles.textContainer}>
-                <Text style={styles.text}> 운전의 패턴을 읽고, 데이터로 말하다.</Text>
-                <Text style={styles.text}> 운전 MoBTI는 무엇일까요?</Text>
-            </View>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <Logo width={280} height={80} />;
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    image: {
-        marginTop: 277,
-        marginLeft: 36,
-        width: 243,
-        resizeMode: 'contain',
-    },
-    textContainer: {
-      marginTop: 50,
-    },
-    text: {
-        marginTop: 5,
-        marginLeft: 36,
-        fontSize: 16,
-        fontWeight: 'semibold',
-        color: '#565656',
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+  },
 });
