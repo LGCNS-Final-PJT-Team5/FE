@@ -1,5 +1,6 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
+import Feather from 'react-native-vector-icons/Feather';
 
 type NavigatorProps = {
   pageIndex: number;
@@ -7,8 +8,11 @@ type NavigatorProps = {
   close: () => void;
 };
 
-export const RegisterNavigator = ({pageIndex, goToPrior, close}: NavigatorProps) => {
-
+export const RegisterNavigator = ({
+  pageIndex,
+  goToPrior,
+  close,
+}: NavigatorProps) => {
   return (
     <View style={styles.appbarContainer}>
       {pageIndex > 0 ? (
@@ -16,21 +20,15 @@ export const RegisterNavigator = ({pageIndex, goToPrior, close}: NavigatorProps)
           onPress={() => {
             goToPrior();
           }}>
-          <Image
-            style={styles.appbarButton}
-            source={require('../../assets/prior_button.png')}
-          />
+          <Feather name="chevron-left" size={24} />
         </TouchableOpacity>
       ) : (
         <View style={styles.blackBox} /> // ← 자리를 맞추기 위한 빈 박스
       )}
-      <TouchableOpacity>
-        <Image
-          style={styles.appbarButton}
-          source={require('../../assets/cancel_buttom.png')}
-        />
+      <TouchableOpacity style={styles.appbarButton} onPress={close}>
+        <Feather name="x" size={24} />
       </TouchableOpacity>
-  </View>
+    </View>
   );
 };
 

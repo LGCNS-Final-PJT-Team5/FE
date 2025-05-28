@@ -8,12 +8,14 @@ type Props = {
   leftType?: 'back' | 'logo' | 'none';
   rightType?: 'share' | 'edit' | 'close' | 'none';
   title?: string;
+  onClosePress?: () => void;
 };
 
 function CustomHeader({
   leftType = 'none',
   rightType = 'none',
   title = '',
+  onClosePress,
 }: Props) {
   const navigation = useNavigation();
 
@@ -48,6 +50,15 @@ function CustomHeader({
         </TouchableOpacity>
       );
     }
+
+    if (rightType === 'close') {
+      return (
+        <TouchableOpacity onPress={onClosePress}>
+          <Feather name="x" size={24} />
+        </TouchableOpacity>
+      );
+    }
+
     return <View style={{width: 24}} />;
   };
 

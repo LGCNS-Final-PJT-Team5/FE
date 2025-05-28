@@ -8,6 +8,9 @@ interface UserStore {
   setUser: (user: UserResponse) => void;
   clearUser: () => void;
   setAlarm: (alarm: boolean) => void;
+  reset: () => void;
+  hasHydrated: boolean;
+  setHasHydrated: (val: boolean) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -22,9 +25,15 @@ export const useUserStore = create<UserStore>()(
           set({ user: { ...currentUser, alarm } });
         }
       },
+      reset: () => set({ user: null }),
+      hasHydrated: false,
+      setHasHydrated: (val) => set({ hasHydrated: val }),
     }),
     {
       name: 'user-storage',
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true); // persist가 완료되었을 때
+      },
       storage: createJSONStorage(() => AsyncStorage),
     }
   )
