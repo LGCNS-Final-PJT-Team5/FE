@@ -4,13 +4,19 @@ import {MypageCard} from '../../components/Mypage/MypageCard.tsx';
 import {MypageProfile} from '../../components/Mypage/MypageProfile.tsx';
 
 type MypageProps = {
-  nickname: string,
-  car: string,
-  navigation: any,
-}
+  nickname: string;
+  car: string;
+  navigation: any;
+  onLogout: () => void; // 추가
+};
 
 // @ts-ignore
-export default function MypageScreen({nickname, car, navigation}: MypageProps) {
+export default function MypageScreen({
+  nickname,
+  car,
+  navigation,
+  onLogout,
+}: MypageProps) {
   const navInfo = [
     {
       nav: 'MypageCar',
@@ -40,17 +46,18 @@ export default function MypageScreen({nickname, car, navigation}: MypageProps) {
 
   return (
     <View style={styles.container}>
-      <MypageProfile
-        name={nickname}
-        car={car}
-      />
+      <MypageProfile name={nickname} car={car} />
       <Text style={styles.sectionTitle}>계정</Text>
       {navInfo.map((item, index) => {
-        return <MypageCard
-          index={index}
-          item={item}
-          navigation={navigation}
-        />;
+        return (
+          <MypageCard
+            key={index}
+            index={index}
+            item={item}
+            navigation={navigation}
+            onLogout={onLogout}
+          />
+        );
       })}
     </View>
   );
