@@ -140,7 +140,7 @@ function MypageStack() {
         component={MypageCarContainer}
         options={{
           header: () => (
-            <CustomHeader leftType="back" rightType="edit" title="내 차 정보" />
+            <CustomHeader leftType="back" title="내 차 정보" />
           ),
         }}
       />
