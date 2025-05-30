@@ -4,7 +4,7 @@ import {RegisterHeader} from '../../../components/Register/RegisterHeader.tsx';
 import {RegisterInput} from '../../../components/Register/RegisterInput.tsx';
 import {BlueButton} from '../../../components/common/button/BlueButton.tsx';
 import CustomModal from '../../../components/common/CustomModal.tsx';
-import {userService} from '../../../services/api/userService.ts';
+import { authService } from '../../../services/api/authService.ts';
 
 type NicknameProps = {
   text: string;
@@ -31,7 +31,7 @@ export default function RegisterNicknameView({
     }
 
     try {
-      const isExists = await userService.checkDuplicateNickname(nickname);
+      const isExists = await authService.checkDuplicateNickname(nickname);
 
       if (isExists) {
         setAlertMessage('이미 사용 중인 닉네임입니다.');
