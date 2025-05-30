@@ -17,7 +17,7 @@ export interface DrivingDetailData {
   date: string;
   time: string;
   totalScore: number;
-  scores: DrivingScoreItem[];
+  scores: Array<{name: string; value: number; color: string}>;
   message: string;
 }
 

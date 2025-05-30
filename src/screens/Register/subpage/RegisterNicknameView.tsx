@@ -4,7 +4,7 @@ import {RegisterHeader} from '../../../components/Register/RegisterHeader.tsx';
 import {RegisterInput} from '../../../components/Register/RegisterInput.tsx';
 import {BlueButton} from '../../../components/common/button/BlueButton.tsx';
 import CustomModal from '../../../components/common/CustomModal.tsx';
-import { authService } from '../../../services/api/authService.ts';
+import {authService} from '../../../services/api/authService.ts';
 
 type NicknameProps = {
   text: string;

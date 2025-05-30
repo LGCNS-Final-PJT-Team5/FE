@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ActivityIndicator, View, StyleSheet, Text } from 'react-native';
 import DrivingDetailScreen from '../../screens/Driving/DrivingDetailScreen';
-import { DrivingStackParamList, DrivingDetailData } from '../../types/driving';
+import { DrivingStackParamList } from '../../types/driving';
+import { useDrivingDetailStore } from '../../store/drivingDetailStore';
+import { useUserStore } from '../../store/useUserStore';
 
 type DrivingDetailNavigationProp = NativeStackNavigationProp<
   DrivingStackParamList,
@@ -15,48 +18,18 @@ const DrivingDetailContainer: React.FC = () => {
   const navigation = useNavigation<DrivingDetailNavigationProp>();
   const route = useRoute<DrivingDetailRouteProp>();
   const { drivingId } = route.params || { drivingId: '' };
-
-  const [data, setData] = useState<DrivingDetailData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // 테스트 데이터 - 실제 앱에서는 API에서 로드
-  const mockData: DrivingDetailData = {
-    date: '2025년 4월 17일',
-    time: '16:30~17:28까지 주행기록',
-    totalScore: 87.12,
-    scores: [
-      {name: '탄소 배출 및 연비 점수', value: 82.5, color: '#007AFF'},
-      {name: '안전 운전 점수', value: 51.7, color: '#4ECD7B'},
-      {name: '사고 예방 점수', value: 34.7, color: '#BB27FF'},
-      {name: '주의력 점수', value: 70.0, color: '#FFD927'},
-    ],
-    message:
-      '전체적으로 안정적인 운전 습관이에요\n특히 급제동과 급가속을 잘 컨트롤했네요!',
-  };
+  
+  const { driveDetail, isLoading, error, fetchDriveDetail } = useDrivingDetailStore();
+  const { user } = useUserStore();
+  const userId = user?.id || '1'; // 로그인 사용자 ID 또는 기본값
 
   // 카드 배경색 배열
   const cardBgColors = ['#E1F5FE', '#E8F5E9', '#F3E5F5', '#FFF3E0'];
 
-  // 데이터 로드 (실제 앱에서는 API 호출)
+  // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
-    const loadDrivingDetail = async () => {
-      try {
-        // 실제 앱에서는 API 호출: const response = await api.getDrivingDetail(drivingId);
-        // console.log('Loading driving detail for ID:', drivingId);
-        
-        // API 호출 시뮬레이션
-        setTimeout(() => {
-          setData(mockData);
-          setLoading(false);
-        }, 300);
-      } catch (error) {
-        console.error('Error loading driving detail:', error);
-        setLoading(false);
-      }
-    };
-
-    loadDrivingDetail();
-  }, [drivingId]);
+    fetchDriveDetail(drivingId, userId);
+  }, [drivingId, userId, fetchDriveDetail]);
 
   const handleClose = () => {
     navigation.goBack();
@@ -79,19 +52,53 @@ const DrivingDetailContainer: React.FC = () => {
     }
   };
 
-  // 로딩 중일 때 표시할 내용 (실제 앱에서는 로딩 컴포넌트 사용)
-  if (loading || !data) {
-    return null; // 또는 로딩 컴포넌트
+  // 로딩 표시
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4945FF" />
+      </View>
+    );
+  }
+
+  // 에러 표시
+  if (error || !driveDetail) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error || '데이터를 불러올 수 없습니다.'}</Text>
+      </View>
+    );
   }
 
   return (
     <DrivingDetailScreen
-      data={data}
+      data={driveDetail}
       cardBgColors={cardBgColors}
       handleClose={handleClose}
       handleCardPress={handleCardPress}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+  },
+  errorText: {
+    color: '#FF5252',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+});
 
 export default DrivingDetailContainer;

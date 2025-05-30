@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import AttentionScoreReportScreen from '../../screens/Driving/AttentionScoreReportScreen';
 import { 
-  AttentionScoreData, 
   ProcessedAttentionReport, 
   DrivingSession,
   InactivityEvent 
 } from '../../types/report';
+import useAttentionReportStore from '../../store/useAttentionReportStore';
 
 // 탭 옵션
 const TABS = ['운전 시간', '미조작 시간'];
@@ -16,32 +16,28 @@ const TABS = ['운전 시간', '미조작 시간'];
  */
 const AttentionScoreReportContainer: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [selectedTab, setSelectedTab] = useState(TABS[0]);
-  const [loading, setLoading] = useState(true);
   const [reportData, setReportData] = useState<ProcessedAttentionReport | null>(null);
 
-  // API 호출 및 데이터 처리 (실제로는 API에서 가져옴)
+  // driveId는 route params에서 가져오거나 기본값 사용
+  const driveId = route.params?.driveId || '1';
+
+  // Zustand 스토어에서 데이터 가져오기
+  const { data, loading, error, fetchAttentionReport } = useAttentionReportStore();
+
+  // API 호출 및 데이터 가져오기
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        
-        // 실제 앱에서는 API 호출: const response = await api.getAttentionScoreData();
-        // 모의 API 호출
-        setTimeout(() => {
-          const data = getMockData();
-          const processedData = processReportData(data);
-          setReportData(processedData);
-          setLoading(false);
-        }, 500);
-      } catch (error) {
-        console.error('데이터 로딩 오류:', error);
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, []);
+    fetchAttentionReport(driveId);
+  }, [driveId]);
+
+  // API 데이터 처리
+  useEffect(() => {
+    if (data) {
+      const processedData = processReportData(data);
+      setReportData(processedData);
+    }
+  }, [data]);
 
   // 탭 변경 핸들러
   const handleTabChange = (tab: string) => {
@@ -66,39 +62,10 @@ const AttentionScoreReportContainer: React.FC = () => {
     return (end.getTime() - start.getTime()) / (1000 * 60);
   };
 
-  // 모의 데이터 가져오기
-  const getMockData = (): AttentionScoreData => {
-    return {
-      score: 70.0,
-      drivingTime: {
-        score: 100.0,
-        feedback: "안전한 운전 시간 내에서 운전했습니다. 장거리 운전 시에는 2시간마다 휴식을 취하는 습관을 들이세요.",
-        graph: [
-          {
-            startTime: "2025-04-25T08:00:00Z",
-            endTime: "2025-04-25T10:00:00Z"
-          }
-        ]
-      },
-      inactivity: {
-        score: 40.0,
-        feedback: "운전 중 차량 미조작 상태가 여러 번 감지되었습니다. 주행 중에는 항상 핸들을 잡고 있어야 합니다.",
-        graph: [
-          "2025-04-25T08:03:11Z",
-          "2025-04-25T08:05:07Z",
-          "2025-04-25T08:18:33Z",
-          "2025-04-25T08:54:38Z",
-          "2025-04-25T09:38:28Z",
-          "2025-04-25T09:40:16Z"
-        ]
-      }
-    };
-  };
-
   // 데이터 가공
-  const processReportData = (data: AttentionScoreData): ProcessedAttentionReport => {
+  const processReportData = (apiData: any): ProcessedAttentionReport => {
     // 운전 시간 데이터 준비
-    const drivingTimeSessions: DrivingSession[] = data.drivingTime.graph.map((session, index) => {
+    const drivingTimeSessions: DrivingSession[] = apiData.drivingTime.graph.map((session: any, index: number) => {
       const durationMinutes = calculateDuration(session.startTime, session.endTime);
       const durationHours = durationMinutes / 60;
       
@@ -110,13 +77,13 @@ const AttentionScoreReportContainer: React.FC = () => {
         formattedEndTime: formatTime(session.endTime),
         durationMinutes,
         durationHours,
-        // 4시간 기준으로 진행률 계산 (권장 최대 연속 운전 시간)
-        progress: Math.min(durationHours / 4, 1)
+        // 2시간 기준으로 진행률 계산 (권장 최대 연속 운전 시간)
+        progress: Math.min(durationHours / 2, 1)
       };
     });
     
     // 미조작 시간 이벤트 데이터 준비
-    const inactivityEvents: InactivityEvent[] = data.inactivity.graph.map((time, index) => {
+    const inactivityEvents: InactivityEvent[] = apiData.inactivity.graph.map((time: string, index: number) => {
       return {
         id: index,
         time,
@@ -125,19 +92,34 @@ const AttentionScoreReportContainer: React.FC = () => {
     });
 
     return {
-      score: data.score,
-      drivingTimeScore: data.drivingTime.score,
-      inactivityScore: data.inactivity.score,
-      drivingTimeFeedback: data.drivingTime.feedback,
-      inactivityFeedback: data.inactivity.feedback,
+      score: apiData.score,
+      drivingTimeScore: apiData.drivingTime.score,
+      inactivityScore: apiData.inactivity.score,
+      drivingTimeFeedback: apiData.drivingTime.feedback,
+      inactivityFeedback: apiData.inactivity.feedback,
       drivingTimeSessions,
       inactivityEvents
     };
   };
 
-  // 로딩 중이거나 데이터가 없으면 널 반환
+  // 로딩 중이거나 데이터가 없으면 로딩 표시
   if (loading || !reportData) {
-    return null; // 로딩 컴포넌트로 대체 가능
+    return (
+      <AttentionScoreReportScreen
+        score={0}
+        selectedTab={selectedTab}
+        tabs={TABS}
+        loading={true}
+        drivingTimeSessions={[]}
+        inactivityEvents={[]}
+        drivingTimeScore={0}
+        inactivityScore={0}
+        drivingTimeFeedback=""
+        inactivityFeedback=""
+        onTabChange={handleTabChange}
+        onBackPress={handleBackPress}
+      />
+    );
   }
 
   // 스크린 컴포넌트에 데이터와 핸들러 전달
@@ -146,7 +128,7 @@ const AttentionScoreReportContainer: React.FC = () => {
       score={reportData.score}
       selectedTab={selectedTab}
       tabs={TABS}
-      loading={loading}
+      loading={false}
       drivingTimeSessions={reportData.drivingTimeSessions}
       inactivityEvents={reportData.inactivityEvents}
       drivingTimeScore={reportData.drivingTimeScore}
