@@ -11,7 +11,7 @@ export default function MobtiBox({dashboard}: {dashboard: DashboardResponse}) {
     ? dashboard.scores.totalScore.toString()
     : dashboard.scores.totalScore.toFixed(2);
 
-  const mobtiType = getMobtiType(dashboard.scores.totalScore);
+  const mobtiType = getMobtiType(dashboard.scores);
   const {image: mobtiImage, label: mobtiLabel} = getMobtiMeta(mobtiType);
   const isDefault = mobtiType === 'DEFAULT';
 

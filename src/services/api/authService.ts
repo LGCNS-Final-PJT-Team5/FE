@@ -1,5 +1,6 @@
 import { RegisterRequest, TokenRefreshRequest, TokenRefreshResponse } from '../../types/user';
 import authApi from '../../lib/authApi';
+
 class AuthService {
   async kakaoLogin(accessToken: string) {
     const response = await authApi.post('/auth/kakao-login', { accessToken });
@@ -12,6 +13,11 @@ class AuthService {
     } else {
       throw new Error(message || '로그인 중 알 수 없는 오류가 발생했습니다.');
     }
+  }
+
+  async checkDuplicateNickname(nickname: string): Promise<boolean> {
+    const response = await authApi.get(`/auth/nickname?search=${nickname}`);
+    return response.data.data;
   }
 
   async register(payload: RegisterRequest) {

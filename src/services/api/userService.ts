@@ -13,11 +13,6 @@ class UserService {
     await api.patch('/user/me/delete');
   }
 
-  async checkDuplicateNickname(nickname: string): Promise<boolean> {
-    const response = await api.get(`/user/nickname?search=${nickname}`);
-    return response.data.data;
-  }
-
   async updateNickname(nickname: string): Promise<void> {
     await api.patch('/user/nickname', { nickname });
   }
