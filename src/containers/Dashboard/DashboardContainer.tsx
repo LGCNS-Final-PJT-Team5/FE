@@ -11,18 +11,15 @@ import {dashboardService} from '../../services/api/dashboardService';
 export default function DashboardContainer() {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
-  const user = useUserStore(state => state.user);
   const hasHydrated = useUserStore(state => state.hasHydrated);
-
-  const [userInfo, setUserInfo] = useState<UserResponse | null>(null);
+  const userInfo = useUserStore(state => state.user);
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (hasHydrated && user) {
-      setUserInfo(user);
-      setIsEnabled(user.alarm);
+    if (hasHydrated && userInfo) {
+      setIsEnabled(userInfo.alarm);
 
       const fetchDashboard = async () => {
         try {
@@ -38,7 +35,7 @@ export default function DashboardContainer() {
 
       fetchDashboard();
     }
-  }, [hasHydrated, user]);
+  }, [hasHydrated, userInfo]);
 
   if (!hasHydrated || loading) {
     return (
