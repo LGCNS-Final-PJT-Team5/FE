@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserResponse } from '../types/user';
 
-interface UserStore {
+export interface UserStore {
   user: UserResponse | null;
   setUser: (user: UserResponse) => void;
   clearUser: () => void;

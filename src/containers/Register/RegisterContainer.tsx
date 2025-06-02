@@ -75,6 +75,11 @@ const RegisterContainer = () => {
       const accessToken = await AsyncStorage.getItem('accessToken');
       if (!accessToken) {
         console.warn('accessToken이 없습니다.');
+        setAlertMessage(
+          '카카오 로그인이 만료되었습니다.\n다시 로그인해주세요.',
+        );
+        setIsRegisterSuccess(false);
+        setShowAlertModal(true);
         return;
       }
 

@@ -113,14 +113,18 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     const checkToken = async () => {
-      const jwtToken = await AsyncStorage.getItem('jwtToken');
-      if (jwtToken) {
-        setIsLoggedIn(true);
+      try {
+        const jwtToken = await AsyncStorage.getItem('jwtToken');
+        if (jwtToken) {
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        console.warn('토큰 체크 중 오류 발생:', error);
       }
     };
 
     checkToken();
-  }, []); // 마운트 시 1회 실행
+  }, []);
 
   return (
     <SafeAreaProvider>

@@ -5,21 +5,28 @@ type Props = {
   title: string;
   content: string;
   setContent: (content: string) => void;
-  placeholder: string
+  placeholder: string;
 };
 
-export const LabeledInput = ({title, content, setContent, placeholder}: Props ) => {
-  return <View style={styles.contentContainer}>
-    <Text style={styles.title}>{title}</Text>
-    <TextInput
-      placeholder={placeholder}
-      placeholderTextColor="#C7C7CD"
-      style={styles.textInput}
-      maxLength={10}
-      value={content}
-      onChangeText={setContent}
-    />
-  </View>;
+export const LabeledInput = ({
+  title,
+  content,
+  setContent,
+  placeholder,
+}: Props) => {
+  return (
+    <View style={styles.contentContainer}>
+      <Text style={styles.title}>{title}</Text>
+      <TextInput
+        placeholder={placeholder}
+        placeholderTextColor="#C7C7CD"
+        style={styles.textInput}
+        maxLength={10}
+        value={content}
+        onChangeText={setContent}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
