@@ -8,12 +8,13 @@ import DashboardHeader from '../../components/Dashboard/DashboardHeader';
 import {DashboardResponse, HomeStackParamList} from '../../types/dashboard';
 import {UserResponse} from '../../types/user';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import AppText from '../../components/common/AppText';
 
 type DashboardScreenProps = {
   drivingReportData: DrivingScoreCardProps[];
   userInfo: UserResponse;
   isEnabled: boolean;
-  toggleSwitch: () => void;
+  setIsEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   dashboard: DashboardResponse;
   navigation: NativeStackNavigationProp<HomeStackParamList>;
 };
@@ -22,7 +23,7 @@ export default function DashboardScreen({
   drivingReportData,
   userInfo,
   isEnabled,
-  toggleSwitch,
+  setIsEnabled,
   dashboard,
   navigation,
 }: DashboardScreenProps) {
@@ -39,7 +40,7 @@ export default function DashboardScreen({
           <DashboardHeader
             userInfo={userInfo}
             isEnabled={isEnabled}
-            toggleSwitch={toggleSwitch}
+            setIsEnabled={setIsEnabled}
             dashboard={dashboard}
           />
         </>

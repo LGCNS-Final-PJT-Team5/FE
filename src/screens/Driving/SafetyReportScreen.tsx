@@ -60,11 +60,15 @@ const SafetyReportScreen: React.FC<SafetyReportScreenProps> = ({
         </Text>
         <Text style={styles.contentDesc}>급가감속 점수 {scoreText}점</Text>
 
-        <AccelerationChart 
-          data={formattedBarData} 
-          title={safetyData.acceleration.title} 
-          height={chartConfig.lineChartHeight} 
-        />
+        {formattedBarData && formattedBarData.length > 0 ? (
+          <AccelerationChart 
+            data={formattedBarData} 
+            title={safetyData.acceleration.title} 
+            height={chartConfig.lineChartHeight} 
+          />
+        ) : (
+          <Text>차트 데이터가 없습니다.</Text>
+        )}
       </View>
     );
   };

@@ -38,6 +38,10 @@ export const ACCIDENT_COLORS = {
     redStart: 'rgba(229, 62, 62, 0.6)',
     redEnd: 'rgba(229, 62, 62, 0.1)',
   },
+  bg: {
+    light: '#F9F5FF', // 연한 보라색 배경
+    main: '#EBE3FF', // 주 보라색 배경
+  },
 };
 
 // 안전 리포트 전용 컬러 시스템
@@ -65,9 +69,13 @@ export const SAFETY_COLORS = {
     grid: '#CBD5E0',
     lightGrid: 'rgba(203, 213, 224, 0.3)',
   },
+  bg: {
+    light: '#F0FDF4', // 연한 녹색 배경
+    main: '#DCFCE7', // 주 녹색 배경
+  },
 };
 
-// 기존 colors.ts 파일에 추가
+// 친환경 리포트 전용 컬러 시스템
 export const CARBON_COLORS = {
   primary: '#007AFF',  // 메인 컬러 - 파란색
   danger: '#FF5252',
@@ -99,9 +107,13 @@ export const CARBON_COLORS = {
     blueStart: 'rgba(0, 122, 255, 0.6)', // 메인 컬러 기반 그라데이션
     blueEnd: 'rgba(0, 122, 255, 0.1)', // 메인 컬러 기반 그라데이션
   },
+  bg: {
+    light: '#EBF8FF', // 연한 파란색 배경
+    main: '#BEE3F8', // 주 파란색 배경
+  },
 };
 
-// 기존 colors 파일에 추가
+// 주의력 리포트 전용 컬러 시스템
 export const ATTENTION_COLORS = {
   primary: '#FFD927', // 메인 컬러 - 노란색
   danger: '#FF5252',
@@ -132,5 +144,9 @@ export const ATTENTION_COLORS = {
     yellowEnd: 'rgba(255, 217, 39, 0.1)', // 메인 컬러 기반 그라데이션
     orangeStart: 'rgba(237, 137, 54, 0.6)',
     orangeEnd: 'rgba(237, 137, 54, 0.1)',
+  },
+  bg: {
+    light: '#FFFFF0', // 연한 노란색 배경
+    main: '#FEFCBF', // 주 노란색 배경
   },
 };
