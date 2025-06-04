@@ -1,19 +1,34 @@
 import React from 'react';
-import {View, Text, Switch, StyleSheet} from 'react-native';
+import {View, Text, Switch, StyleSheet, Alert} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {UserResponse} from '../../../types/user';
+import {userService} from '../../../services/api/userService';
+import {useUserStore} from '../../../store/useUserStore';
 
 type ProfileHeaderProps = {
   userInfo: UserResponse;
   isEnabled: boolean;
-  toggleSwitch: () => void;
+  setIsEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function ProfileHeader({
   userInfo,
   isEnabled,
-  toggleSwitch,
+  setIsEnabled,
 }: ProfileHeaderProps) {
+  const handleToggle = async () => {
+    const newValue = !isEnabled;
+
+    try {
+      useUserStore.getState().setAlarm(newValue); // 상태 업데이트
+      await userService.updateAlarm(newValue);
+      setIsEnabled(newValue); // 로컬 UI 상태 반영
+    } catch (error) {
+      console.error('알림 설정 변경 실패:', error);
+      Alert.alert('오류', '알림 설정을 변경하는 데 실패했습니다.');
+    }
+  };
+
   return (
     <View style={styles.profileHeader}>
       <Text style={styles.username}>
@@ -25,7 +40,7 @@ export default function ProfileHeader({
         <Switch
           trackColor={{false: '#767577', true: '#4945FF'}}
           thumbColor="#fff"
-          onValueChange={toggleSwitch}
+          onValueChange={handleToggle}
           value={isEnabled}
         />
       </View>

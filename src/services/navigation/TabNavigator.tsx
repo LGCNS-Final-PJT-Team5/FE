@@ -10,15 +10,13 @@ import ReportContainer from '../../containers/Dashboard/ReportContainer.tsx';
 import DrivingScreen from '../../screens/Driving/DrivingScreen.tsx';
 import DrivingHistoryContainer from '../../containers/Driving/DrivingHistoryContainer';
 import DrivingDetailContainer from '../../containers/Driving/DrivingDetailContainer';
-import SafetyReportScreen from '../../screens/Driving/SafetyReportScreen.tsx';
 import CarbonEmissionReportContainer from '../../containers/Driving/CarbonEmissionReportContainer';
 import SafetyReportContainer from '../../containers/Driving/SafetyReportContainer';
 import AccidentPreventionReportContainer from '../../containers/Driving/AccidentPreventionReportContainer';
 import AttentionScoreReportContainer from '../../containers/Driving/AttentionScoreReportContainer';
-import SeedsScreen from '../../screens/Seeds/SeedsScreen.tsx';
+import SeedsContainer from '../../containers/Seeds/SeedsContainer.tsx';
 import ScreenLayout from '../../components/common/CommonLayout.tsx';
 import CustomHeader from '../../components/common/CustomHeader.tsx';
-import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {MypageContainer} from '../../containers/Mypage/MypageContainer.tsx';
 import {MypageCarContainer} from '../../containers/Mypage/MypageCarContainer.tsx';
 import {MypageInfoContainer} from '../../containers/Mypage/MypageInfoContainer.tsx';
@@ -142,7 +140,7 @@ function MypageStack() {
         component={MypageCarContainer}
         options={{
           header: () => (
-            <CustomHeader leftType="back" rightType="edit" title="내 차 정보" />
+            <CustomHeader leftType="back" title="내 차 정보" />
           ),
         }}
       />
@@ -170,11 +168,11 @@ export default function TabNavigator() {
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarIcon: ({color, size}) => {
-          if (route.name === '홈')
+          if (route.name === 'Home')
             return <AntDesign name="home" size={size} color={color} />;
-          if (route.name === '주행기록')
+          if (route.name === 'Drive')
             return <Feather name="pie-chart" size={size} color={color} />;
-          if (route.name === '리워드')
+          if (route.name === 'Seed')
             return (
               <MaterialCommunity
                 name="seed-outline"
@@ -182,34 +180,34 @@ export default function TabNavigator() {
                 color={color}
               />
             );
-          if (route.name === '마이페이지')
+          if (route.name === 'User')
             return <Feather name="user" size={size} color={color} />;
         },
         tabBarActiveTintColor: '#4945FF',
         tabBarInactiveTintColor: 'gray',
       })}>
-      <Tab.Screen name="홈">
+      <Tab.Screen name="Home">
         {() => (
           <ScreenLayout>
             <DashboardStack />
           </ScreenLayout>
         )}
       </Tab.Screen>
-      <Tab.Screen name="주행기록">
+      <Tab.Screen name="Drive">
         {() => (
           <ScreenLayout>
             <DrivingStack />
           </ScreenLayout>
         )}
       </Tab.Screen>
-      <Tab.Screen name="리워드">
+      <Tab.Screen name="Seed">
         {() => (
           <ScreenLayout>
             <SeedsStack />
           </ScreenLayout>
         )}
       </Tab.Screen>
-      <Tab.Screen name="마이페이지">
+      <Tab.Screen name="User">
         {() => (
           <ScreenLayout>
             <MypageStack />
@@ -219,16 +217,3 @@ export default function TabNavigator() {
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  backArrow: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 100,
-  },
-  backArrowIcon: {
-    width: 24,
-    height: 24,
-  },
-});

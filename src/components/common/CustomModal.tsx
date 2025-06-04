@@ -11,30 +11,37 @@ import {
 interface CustomModalProps {
   visible: boolean;
   title: string;
-  content: string[];
+  content?: string[];
   onClose: () => void;
   onConfirm?: () => void;
   confirmText?: string;
   cancelText?: string;
   isAlert?: boolean;
+  contentElement?: React.ReactNode;
+  onDismiss?: () => void;
+  confirmDisabled?: boolean;
 }
 
 const CustomModal = ({
   visible,
   title,
   content,
+  contentElement,
   onClose,
   onConfirm,
   confirmText = '확인',
   cancelText = '취소',
   isAlert = false,
+  onDismiss,
+  confirmDisabled,
 }: CustomModalProps) => {
   return (
     <Modal
       transparent
       visible={visible}
       animationType="fade"
-      onRequestClose={onClose}>
+      onRequestClose={onClose}
+      onDismiss={onDismiss}>
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           <Image
@@ -42,12 +49,14 @@ const CustomModal = ({
             style={styles.icon}
           />
           <Text style={styles.title}>{title}</Text>
-          {content.map((line, idx) => (
+          {content?.map((line, idx) => (
             <Text key={idx} style={styles.content}>
               {line}
             </Text>
           ))}
-
+          {contentElement && (
+            <View style={{width: '100%', marginTop: 12}}>{contentElement}</View>
+          )}
           <View style={styles.buttonGroup}>
             {!isAlert && (
               <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
@@ -55,8 +64,13 @@ const CustomModal = ({
               </TouchableOpacity>
             )}
             <TouchableOpacity
-              style={[styles.confirmButton, isAlert && {width: '100%'}]}
-              onPress={onConfirm || onClose}>
+              style={[
+                styles.confirmButton,
+                isAlert && {width: '100%'},
+                confirmDisabled && {backgroundColor: '#ccc'},
+              ]}
+              onPress={onConfirm || onClose}
+              disabled={confirmDisabled}>
               <Text style={styles.confirmButtonText}>{confirmText}</Text>
             </TouchableOpacity>
           </View>
@@ -109,7 +123,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#D9D9D9',
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 14,
     marginRight: 8,
     alignItems: 'center',
   },
@@ -121,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#3B5BFF',
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 14,
     alignItems: 'center',
   },
   confirmButtonText: {

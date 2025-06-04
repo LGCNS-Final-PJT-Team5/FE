@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Modive</string>
+    <string name="kakao_app_key">fafb8f8f7f33bbf38fbccc465ae883d5</string>
 </resources>

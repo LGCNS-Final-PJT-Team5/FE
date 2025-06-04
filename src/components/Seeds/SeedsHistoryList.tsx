@@ -9,24 +9,24 @@ type SeedsHistoryListProps = {
 };
 
 const SeedsHistoryList = ({seedsHistory}: SeedsHistoryListProps) => {
-  const renderListWithDateHeaders = () => {
-    let lastDate: string | null = null;
+  let lastDate: string | null = null;
 
-    return seedsHistory.map((item, index) => {
-      const displayDate = formatDate(item.createdAt);
-      const showDate = displayDate !== lastDate;
-      lastDate = displayDate;
+  return (
+    <>
+      {seedsHistory.map((item, index) => {
+        const displayDate = formatDate(item.createdAt);
+        const showDate = displayDate !== lastDate;
+        lastDate = displayDate;
 
-      return (
-        <View key={index} style={{width: '100%'}}>
-          {showDate && <Text style={styles.dateHeader}>{displayDate}</Text>}
-          <SeedsHistoryItem item={item} />
-        </View>
-      );
-    });
-  };
-
-  return <>{renderListWithDateHeaders()}</>;
+        return (
+          <View key={index} style={{width: '100%'}}>
+            {showDate && <Text style={styles.dateHeader}>{displayDate}</Text>}
+            <SeedsHistoryItem item={item} />
+          </View>
+        );
+      })}
+    </>
+  );
 };
 
 const styles = StyleSheet.create({

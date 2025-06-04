@@ -8,16 +8,37 @@ type InterestProps = {
   value: string;
   setValue: (text: string) => void;
   register: () => void;
+  setShowAlertModal: (visible: boolean) => void;
+  setAlertMessage: (message: string) => void;
 };
 
 const categories = [
-  '연비', '보험료',
-  '초보운전', '앱테크',
-  '차량 관리', '탄소 절감',
-  '드라이브 스타', '드라이빙 테크닉',
+  '연비',
+  '보험료',
+  '초보운전',
+  '앱테크',
+  '차량 관리',
+  '탄소 절감',
+  '드라이브 스타',
+  '드라이빙 테크닉',
 ];
 
-export default function RegisterInterestScreen({ value, setValue, register }: InterestProps) {
+export default function RegisterInterestScreen({
+  value,
+  setValue,
+  register,
+  setShowAlertModal,
+  setAlertMessage,
+}: InterestProps) {
+  const handleRegister = () => {
+    if (!value.trim()) {
+      setAlertMessage('관심 항목을 선택해주세요.');
+      setShowAlertModal(true);
+      return;
+    }
+    register();
+  };
+
   return (
     <View style={styles.page}>
       <RegisterHeader
@@ -30,10 +51,7 @@ export default function RegisterInterestScreen({ value, setValue, register }: In
         setValue={setValue}
         categories={categories}
       />
-      <BlueButton
-        title={'완료'}
-        moveNext={register}
-      />
+      <BlueButton title={'완료'} moveNext={handleRegister} />
     </View>
   );
 }

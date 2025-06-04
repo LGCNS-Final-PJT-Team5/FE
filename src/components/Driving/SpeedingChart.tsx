@@ -17,8 +17,8 @@ const calculateSpeedLimitPosition = (
   maxValue: number,
   chartHeight: number,
 ): number => {
-  const dataAreaHeight = chartHeight * 0.83;
-  const topPadding = chartHeight * 0.08;
+  const dataAreaHeight = chartHeight * 0.85; // 데이터 영역 비율 증가
+  const topPadding = chartHeight * 0.155;     // 상단 패딩 증가
   const percentage = (maxValue - speedLimit) / maxValue;
   return topPadding + (dataAreaHeight * percentage);
 };

@@ -1,0 +1,20 @@
+export type RootStackParamList = {
+    Main: undefined;
+    Home: undefined;
+    Register: undefined;
+    Login: undefined;
+    Dashboard: undefined;
+    Feedback: undefined;
+    DrivingHistory: undefined;
+    Driving: undefined;
+    DrivingDetail: undefined;
+    SafetyReport: undefined;
+    CarbonEmissionReport: undefined;
+    AccidentPreventionReport: undefined;
+    AttentionScoreReport: undefined;
+    Seeds: undefined;
+    Mypage: undefined;
+    MypageCar: undefined;
+    MypageInfo: undefined;
+    MypageInterest: undefined;
+};

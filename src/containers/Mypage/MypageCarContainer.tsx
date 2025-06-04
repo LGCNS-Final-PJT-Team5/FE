@@ -1,31 +1,62 @@
-import MypageCarScreen from '../../screens/Mypage/subpage/MypageCarScreen.tsx';
+import {useEffect, useState} from 'react';
+import MypageCarScreen from '../../screens/Mypage/subpage/MypageCarScreen';
+import {useCarStore} from '../../store/useCarStore';
+import {userService} from '../../services/api/userService';
 
 export const MypageCarContainer = () => {
+  const cars = useCarStore(state => state.cars);
+  const fetchCars = useCarStore(state => state.fetchCars);
+  const setActiveCar = useCarStore(state => state.setActiveCar);
+  const deleteCarFromStore = useCarStore(state => state.deleteCar);
 
-  const cars: Car[] = [
-    {index: 0, number: '04히 2025', selected: true},
-    {index: 1, number: '04히 1234', selected: false},
-    {index: 2, number: '04히 5678', selected: false},
-  ];
+  const [modalVisible, setModalVisible] = useState(false);
+  const [pendingCarId, setPendingCarId] = useState<number | null>(null);
 
-  const addCar = () => {
+  useEffect(() => {
+    fetchCars();
+  }, []);
 
-  }
+  const handleRequestSetCar = (carId: number) => {
+    setPendingCarId(carId);
+    setModalVisible(true);
+  };
 
-  const setCar = () => {
+  const handleConfirmSetCar = async () => {
+    if (pendingCarId !== null) {
+      await userService.activeCar(pendingCarId);
+      setActiveCar(pendingCarId);
+    }
+    setModalVisible(false);
+    setPendingCarId(null);
+  };
 
-  }
+  const handleAddCar = async (number: string) => {
+    try {
+      await userService.registerCar(number);
+      await fetchCars();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const deleteCar = () => {
-
-  }
+  const handleDeleteCar = async (carId: number) => {
+    try {
+      await userService.deleteCar(carId);
+      deleteCarFromStore(carId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <MypageCarScreen
       cars={cars}
-      addCar={addCar}
-      setCar={setCar}
-      deleteCar={deleteCar}
+      addCar={handleAddCar}
+      deleteCar={handleDeleteCar}
+      onRequestSetCar={handleRequestSetCar}
+      modalVisible={modalVisible}
+      onConfirmSetCar={handleConfirmSetCar}
+      onCloseModal={() => setModalVisible(false)}
     />
   );
-}
+};

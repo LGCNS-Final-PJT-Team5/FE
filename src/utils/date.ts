@@ -7,7 +7,7 @@ export const formatDate = (dateString: string) => {
   
   const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
   
-  return `${year}/${month}/${day}(${dayOfWeek})`;
+  return `${year}.${month}.${day}.(${dayOfWeek})`;
 };
 
 // 시간 및 소요 시간 포맷 함수

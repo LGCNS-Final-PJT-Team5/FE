@@ -1,6 +1,5 @@
 export type SeedHistoryRawItem = {
   id: number;
-  userId: string;
   amount: number;
   type: string;
   description: string;

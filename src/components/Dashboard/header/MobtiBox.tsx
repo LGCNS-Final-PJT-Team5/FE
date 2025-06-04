@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {DashboardResponse} from '../../../types/dashboard';
+import {getMobtiMeta, getMobtiType} from '../../../utils/mobti';
 
 export default function MobtiBox({dashboard}: {dashboard: DashboardResponse}) {
   // Todo
@@ -10,16 +11,21 @@ export default function MobtiBox({dashboard}: {dashboard: DashboardResponse}) {
     ? dashboard.scores.totalScore.toString()
     : dashboard.scores.totalScore.toFixed(2);
 
+  const mobtiType = getMobtiType(dashboard.scores);
+  const {image: mobtiImage, label: mobtiLabel} = getMobtiMeta(mobtiType);
+  const isDefault = mobtiType === 'DEFAULT';
+
   return (
     <View style={styles.mobtiBox}>
-      <Image
-        source={require('../../../assets/mobti/AIUE.png')}
-        style={styles.mobtiImg}
-      />
+      <Image source={mobtiImage} style={styles.mobtiImg} />
       <View style={styles.mobtiTextBox}>
         <Text style={styles.mobtiLabel}>Mobti</Text>
         <Text style={styles.mobtiTitle}>
-          <Text style={styles.mobtiType}>AIUE</Text> - 자유로운 드라이버
+          <Text style={styles.mobtiType}>
+            {isDefault ? '환영합니다!' : mobtiType}
+          </Text>
+          {'\n'}
+          <Text style={isDefault && {color: '#707070'}}>{mobtiLabel}</Text>
         </Text>
         <Text style={styles.scoreText}>
           종합점수 <Text style={styles.scoreValue}>{totalScore}</Text>
