@@ -21,6 +21,7 @@ import TabSelector from '../../components/common/TabSelector';
 import AccelerationChart from '../../components/Driving/AccelerationChart';
 import TurningChart from '../../components/Driving/TurningChart';
 import SpeedingChart from '../../components/Driving/SpeedingChart';
+import AccelerationDetailChart from '../../components/Driving/AccelerationDetailChart';
 
 // 화면 크기 가져오기
 const screenWidth = Dimensions.get('window').width;
@@ -118,6 +119,21 @@ const SafetyReportScreen: React.FC<SafetyReportScreenProps> = ({
           speedLimit={safetyData.speeding.speedLimit}
           height={chartConfig.lineChartHeight}
           width={chartConfig.lineChartWidth}
+        />
+      </View>
+    );
+  };
+
+  // 차트 렌더링 부분
+  const renderAccelerationSection = () => {
+    return (
+      <View style={styles.section}>
+        <AccelerationDetailChart
+          data={safetyData.acceleration.chartData}
+          title={safetyData.acceleration.title}
+          score={safetyData.acceleration.score}
+          statistics={safetyData.acceleration.statistics}
+          feedback={safetyData.acceleration.feedback}
         />
       </View>
     );

@@ -32,20 +32,42 @@ const SafetyReportContainer: React.FC = () => {
   // API 데이터 처리
   useEffect(() => {
     if (data) {
-      // API 응답 데이터를 차트 데이터로 변환
+      // 급가속/정상가속 개수 계산
+      const highAccelerationCount = data.acceleration.graph.filter(item => item.flag).length;
+      const normalAccelerationCount = data.acceleration.graph.filter(item => !item.flag).length;
+      const totalEvents = data.acceleration.graph.length;
+      
       const processedData = {
         score: data.score,
         acceleration: {
           score: data.acceleration.score,
           title: '급가감속 분석',
           feedback: data.acceleration.feedback,
+          // 점수 계산 공식 표시용 데이터
+          statistics: {
+            totalEvents: totalEvents,
+            highAcceleration: highAccelerationCount,
+            normalAcceleration: normalAccelerationCount,
+            // 점수 계산 공식: 100 * 정상가속 / (정상가속 + 급가속)
+            formula: {
+              normal: normalAccelerationCount,
+              high: highAccelerationCount,
+              calculated: normalAccelerationCount > 0 ? 
+                Math.round(100 * normalAccelerationCount / totalEvents) : 0
+            }
+          },
           // 급가속/급감속 발생 시간을 차트 데이터로 변환
-          chartData: data.acceleration.graph.map((time, index) => {
-            const date = new Date(time);
+          chartData: data.acceleration.graph.map((item) => {
+            const date = new Date(item.time);
+            const isRapid = item.flag;
+            
             return {
-              value: 60 + Math.random() * 20, // 실제 값으로 변경 필요
-              label: `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`,
-              barWidth: 30 // barWidth 속성 추가
+              value: isRapid ? 85 : 60, // 급가속은 더 높은 값, 정상가속은 낮은 값
+              label: `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`,
+              barWidth: 30,
+              frontColor: isRapid ? '#E53E3E' : '#4CAF50', // 급가속: 빨강, 정상가속: 초록
+              accelerationType: isRapid ? '급가속' : '정상가속',
+              time: item.time
             };
           })
         },

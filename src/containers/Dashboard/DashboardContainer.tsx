@@ -11,18 +11,25 @@ import {dashboardService} from '../../services/api/dashboardService';
 export default function DashboardContainer() {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
-  const user = useUserStore(state => state.user);
-  const hasHydrated = useUserStore(state => state.hasHydrated);
+  // const user = useUserStore(state => state.user);
+  // const hasHydrated = useUserStore(state => state.hasHydrated);
 
-  const [userInfo, setUserInfo] = useState<UserResponse | null>(null);
+  const [userInfo, setUserInfo] = useState<UserResponse | null>({
+    reward: 0,
+    nickname: 'rr',
+    name:'ff',
+    email: 'fdf#dfsdf.sdf',
+    alarm: true
+  });
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (hasHydrated && user) {
-      setUserInfo(user);
-      setIsEnabled(user.alarm);
+    // if (hasHydrated) {
+      // setUserInfo(user);
+      // setIsEnabled(user.alarm);
+      setIsEnabled(false);
 
       const fetchDashboard = async () => {
         try {
@@ -37,21 +44,23 @@ export default function DashboardContainer() {
       };
 
       fetchDashboard();
-    }
-  }, [hasHydrated, user]);
+    // }
 
-  if (!hasHydrated || loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6366F1" />
-        <Text style={styles.loadingText}>
-          대시보드 정보를 불러오는 중입니다.
-        </Text>
-      </View>
-    );
-  }
 
-  if (!userInfo || !dashboard) {
+  }, [dashboard]);
+
+  // if (!hasHydrated || loading) {
+  //   return (
+  //     <View style={styles.loadingContainer}>
+  //       <ActivityIndicator size="large" color="#6366F1" />
+  //       <Text style={styles.loadingText}>
+  //         대시보드 정보를 불러오는 중입니다.
+  //       </Text>
+  //     </View>
+  //   );
+  // }
+
+  if (!dashboard) {
     return null;
   }
 

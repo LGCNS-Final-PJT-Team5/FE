@@ -9,7 +9,8 @@ import {useAuthStore} from '../../store/useAuthStore';
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
-  const isLoggedIn = useAuthStore(state => state.isLoggedIn);
+  // const isLoggedIn = useAuthStore(state => state.isLoggedIn);
+  const isLoggedIn = true;
 
   return (
     <NavigationContainer>
