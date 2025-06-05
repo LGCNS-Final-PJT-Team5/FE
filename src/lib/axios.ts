@@ -4,13 +4,13 @@ import {Platform} from 'react-native';
 import {authService} from '../services/api/authService';
 import {useAuthStore} from '../store/useAuthStore'; // 선택
 
-let baseURL = '';
+let baseURL = 'http://modive.site';
 
-if (Platform.OS === 'ios') {
-  baseURL = 'http://localhost:8080';
-} else {
-  baseURL = 'http://10.0.2.2:8080';
-}
+// if (Platform.OS === 'ios') {
+//   baseURL = 'http://localhost:8000';
+// } else {
+//   baseURL = 'http://10.0.2.2:8000';
+// }
 
 const api = axios.create({ baseURL });
 
