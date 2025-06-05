@@ -27,11 +27,13 @@ export default function DashboardContainer() {
       const fetchDashboard = async () => {
         try {
           const data = await dashboardService.getDashboard();
+          console.log('✅ 대시보드 데이터 성공:', data);
           setDashboard(data);
         } catch (error) {
           console.error('대시보드 데이터 가져오기 실패:', error);
           Alert.alert('오류', '대시보드 데이터를 불러오는 데 실패했습니다.');
         } finally {
+          console.log('로딩 완료 처리');
           setLoading(false);
         }
       };

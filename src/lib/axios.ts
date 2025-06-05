@@ -7,9 +7,9 @@ import {useAuthStore} from '../store/useAuthStore'; // 선택
 let baseURL = '';
 
 if (Platform.OS === 'ios') {
-  baseURL = 'http://localhost:8000';
+  baseURL = 'http://localhost:8080';
 } else {
-  baseURL = 'http://10.0.2.2:8000';
+  baseURL = 'http://10.0.2.2:8080';
 }
 
 const api = axios.create({ baseURL });

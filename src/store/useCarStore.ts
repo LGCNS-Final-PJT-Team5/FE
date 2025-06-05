@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { Car } from '../types/Mypage';
 import { userService } from '../services/api/userService';
 
-interface CarStore {
+export interface CarStore {
   cars: Car[];
   activeCar: Car | null;
   fetchCars: () => Promise<void>;

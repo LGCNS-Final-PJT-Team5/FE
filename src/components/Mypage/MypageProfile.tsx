@@ -3,24 +3,25 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
 type ProfileProps = {
-  name: string,
-  car: string,
-}
+  name: string;
+  car: string;
+};
 
-export const MypageProfile = ({name, car}:ProfileProps) => {
-
-  return <View style={styles.profile}>
-    <EvilIcons
-      name={'user'}
-      size={70}
-      color={'#c4c4c4'}
-      style={styles.profileImage}
-    />
-    <View style={{gap: 3}}>
-      <Text style={styles.profileName}>{name}</Text>
-      <Text style={styles.profileCar}>{car}</Text>
+export const MypageProfile = ({name, car}: ProfileProps) => {
+  return (
+    <View style={styles.profile}>
+      <EvilIcons
+        name={'user'}
+        size={70}
+        color={'#c4c4c4'}
+        style={styles.profileImage}
+      />
+      <View style={{gap: 3}}>
+        <Text style={styles.profileName}>{name}</Text>
+        <Text style={styles.profileCar}>{car}</Text>
+      </View>
     </View>
-  </View>
+  );
 };
 
 const styles = StyleSheet.create({
