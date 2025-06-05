@@ -7,12 +7,12 @@ import DashboardScreen from '../../screens/Dashboard/DashboardScreen';
 import {useUserStore} from '../../store/useUserStore';
 import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
 import {dashboardService} from '../../services/api/dashboardService';
+import {logout} from '@react-native-seoul/kakao-login';
 
 export default function DashboardContainer() {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
   const user = useUserStore(state => state.user);
-  const hasHydrated = useUserStore(state => state.hasHydrated);
 
   const [userInfo, setUserInfo] = useState<UserResponse | null>(null);
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
@@ -20,29 +20,34 @@ export default function DashboardContainer() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (hasHydrated && user) {
+    console.log('user 상태:', user);
+
+    if (user) {
       setUserInfo(user);
       setIsEnabled(user.alarm);
 
       const fetchDashboard = async () => {
         try {
           const data = await dashboardService.getDashboard();
-          console.log('✅ 대시보드 데이터 성공:', data);
+          console.log('대시보드 데이터 성공:', data);
           setDashboard(data);
         } catch (error) {
           console.error('대시보드 데이터 가져오기 실패:', error);
           Alert.alert('오류', '대시보드 데이터를 불러오는 데 실패했습니다.');
         } finally {
-          console.log('로딩 완료 처리');
           setLoading(false);
         }
       };
 
       fetchDashboard();
+    } else {
+      // user가 없으면 로그인 화면으로
+      setLoading(false);
+      logout();
     }
-  }, [hasHydrated, user]);
+  }, [user]);
 
-  if (!hasHydrated || loading) {
+  if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6366F1" />

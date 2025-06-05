@@ -77,6 +77,14 @@ const mobtiMap: Record<string, MobtiMeta> = {
 };
 
 export const getMobtiType = (scores: DriveScores): string => {
+  // 모든 점수가 0인 경우 (운전 데이터가 없는 경우) 기본값 반환
+  const allScores = Object.values(scores);
+  const isAllZero = allScores.every(score => score === 0);
+  
+  if (isAllZero) {
+    return 'DEFAULT';
+  }
+
   const styleScore = (100 - scores.accelerationScore + 100 - scores.sharpTurnScore + 100 - scores.overSpeedScore) / 3;
   const sensitivityScore = (scores.reactionScore + scores.accelerationScore) / 2;
   const focusScore = (scores.attentionScore + scores.laneDepartureScore + scores.followingDistanceScore) / 3;
