@@ -1,6 +1,18 @@
 // jest.setup.js
-import '@testing-library/jest-native/extend-expect';
-import 'react-native-gesture-handler/jestSetup';
+require('@testing-library/jest-native/extend-expect');
+require('react-native-gesture-handler/jestSetup');
+
+// useEffect가 동기적으로 실행되도록 설정
+global.setImmediate = global.setImmediate || ((fn, ...args) => global.setTimeout(fn, 0, ...args));
+
+// StyleSheet이 없을 경우를 대비한 전역 모킹
+if (!global.StyleSheet) {
+  global.StyleSheet = {
+    create: jest.fn(styles => styles),
+    flatten: jest.fn(styles => styles),
+    compose: jest.fn(styles => styles)
+  };
+}
 
 // 글로벌 fetch mock
 global.fetch = jest.fn(() => Promise.resolve({
