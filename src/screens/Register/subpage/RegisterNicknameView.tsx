@@ -10,23 +10,33 @@ type NicknameProps = {
   text: string;
   setText: (text: string) => void;
   moveNext: () => void;
+  setShowAlertModal: (visible: boolean) => void;
+  setAlertMessage: (message: string) => void;
 };
 
 export default function RegisterNicknameView({
   text,
   setText,
   moveNext,
+  setShowAlertModal,
+  setAlertMessage,
 }: NicknameProps) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
   const handleNext = async () => {
     const nickname = text.trim();
     console.log('닉네임:', nickname);
 
     if (!nickname) {
       setAlertMessage('닉네임을 입력해주세요.');
-      setModalVisible(true);
+      setShowAlertModal(true);
+      return;
+    }
+
+    // 닉네임 유효성 검사
+    if (!/^[가-힣a-zA-Z0-9]{2,10}$/.test(nickname)) {
+      setAlertMessage(
+        '닉네임은 2~10자의 한글, 영문, 숫자만 사용할 수 있습니다.',
+      );
+      setShowAlertModal(true);
       return;
     }
 
@@ -35,7 +45,7 @@ export default function RegisterNicknameView({
 
       if (isExists) {
         setAlertMessage('이미 사용 중인 닉네임입니다.');
-        setModalVisible(true);
+        setShowAlertModal(true);
         return;
       }
 
@@ -43,7 +53,7 @@ export default function RegisterNicknameView({
     } catch (error) {
       console.error(error);
       setAlertMessage('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-      setModalVisible(true);
+      setShowAlertModal(true);
     }
   };
 
@@ -61,13 +71,6 @@ export default function RegisterNicknameView({
         maxLength={10}
       />
       <BlueButton title="다음" moveNext={handleNext} />
-
-      <CustomModal
-        visible={modalVisible}
-        title={alertMessage}
-        onClose={() => setModalVisible(false)}
-        isAlert={true}
-      />
     </View>
   );
 }

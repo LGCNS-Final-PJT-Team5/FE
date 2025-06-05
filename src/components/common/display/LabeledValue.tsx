@@ -6,13 +6,15 @@ type Props = {
   content: string;
 };
 
-export const LabeledValue = ({title, content}: Props ) => {
-  return <View style={styles.contentContainer}>
-    <Text style={styles.title}>{title}</Text>
-    <View style={styles.block}>
-      <Text style={styles.blockText}>{content}</Text>
+export const LabeledValue = ({title, content}: Props) => {
+  return (
+    <View style={styles.contentContainer}>
+      <Text style={styles.title}>{title}</Text>
+      <View style={styles.block}>
+        <Text style={styles.blockText}>{content}</Text>
+      </View>
     </View>
-  </View>;
+  );
 };
 
 const styles = StyleSheet.create({
