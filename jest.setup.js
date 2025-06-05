@@ -1,61 +1,21 @@
-// 필수 라이브러리 임포트
+// jest.setup.js
+import '@testing-library/jest-native/extend-expect';
 import 'react-native-gesture-handler/jestSetup';
 
-// Jest 함수들은 전역 스코프에서 사용할 수 없으므로 삭제
-// 274번째 줄에 있던 beforeAll 코드를 제거
-
-// 글로벌 mocks 설정
+// 글로벌 fetch mock
 global.fetch = jest.fn(() => Promise.resolve({
   json: () => Promise.resolve({}),
   ok: true
 }));
 
-// React Native 모킹 - requireActual 사용하지 않음
-jest.mock('react-native', () => {
-  return {
-    Platform: { OS: 'ios', select: jest.fn(obj => obj.ios) },
-    StyleSheet: { create: jest.fn(styles => styles) },
-    Dimensions: { get: jest.fn(() => ({ width: 375, height: 812 })) },
-    View: 'View',
-    Text: 'Text',
-    TouchableOpacity: 'TouchableOpacity',
-    FlatList: 'FlatList',
-    ScrollView: 'ScrollView',
-    Image: 'Image',
-    TextInput: 'TextInput',
-    Modal: 'Modal',
-    Pressable: 'Pressable',
-    ImageBackground: 'ImageBackground',
-    ActivityIndicator: 'ActivityIndicator',
-    Alert: { alert: jest.fn() },
-    Animated: {
-      Value: jest.fn(() => ({
-        interpolate: jest.fn(),
-        setValue: jest.fn()
-      })),
-      timing: jest.fn(() => ({ start: jest.fn(cb => cb && cb()) })),
-      spring: jest.fn(() => ({ start: jest.fn(cb => cb && cb()) })),
-      createAnimatedComponent: jest.fn(comp => comp)
-    },
-    NativeModules: {
-      StatusBarManager: { getHeight: jest.fn() },
-      RNGestureHandlerModule: {
-        attachGestureHandler: jest.fn(),
-        createGestureHandler: jest.fn(),
-        dropGestureHandler: jest.fn(),
-        updateGestureHandler: jest.fn(),
-        State: {},
-        Directions: {}
-      }
-    },
-    TurboModuleRegistry: {
-      getEnforcing: jest.fn()
-    },
-    NativeEventEmitter: jest.fn(() => ({
-      addListener: jest.fn(),
-      removeAllListeners: jest.fn()
-    }))
-  };
+// AsyncStorage mock
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
+// React Native 기본 Alert mock
+jest.spyOn(require('react-native'), 'Alert', 'get').mockReturnValue({
+  alert: jest.fn(),
 });
 
 // React Navigation 모킹
@@ -73,7 +33,7 @@ jest.mock('@react-navigation/native', () => ({
   useIsFocused: jest.fn(() => true)
 }));
 
-// 네이티브 라이브러리 모킹
+// React Native Safe Area Context 모킹
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaProvider: ({ children }) => children,
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
@@ -85,6 +45,27 @@ jest.mock('react-native-vector-icons/Feather', () => 'Icon');
 jest.mock('react-native-vector-icons/MaterialCommunityIcons', () => 'Icon');
 jest.mock('react-native-vector-icons/MaterialIcons', () => 'Icon');
 jest.mock('react-native-vector-icons/Ionicons', () => 'Icon');
+
+// React Native Linear Gradient mock
+jest.mock('react-native-linear-gradient', () => 'LinearGradient');
+
+// React Native Reanimated mock
+jest.mock('react-native-reanimated', () => {
+  const Reanimated = require('react-native-reanimated/mock');
+  Reanimated.default.call = () => {};
+  return Reanimated;
+});
+
+// React Native Gesture Handler mock
+jest.mock('react-native-gesture-handler', () => {
+  return {
+    PanGestureHandler: 'PanGestureHandler',
+    State: {
+      ACTIVE: 'ACTIVE',
+      END: 'END'
+    }
+  };
+});
 
 // Firebase 모킹
 jest.mock('@react-native-firebase/messaging', () => ({
@@ -131,51 +112,22 @@ jest.mock('@notifee/react-native', () => {
   };
 });
 
-// AsyncStorage 모킹
-jest.mock('@react-native-async-storage/async-storage', () => {
-  let storage = {};
-  return {
-    setItem: jest.fn((key, value) => Promise.resolve(null)),
-    getItem: jest.fn((key) => Promise.resolve(storage[key] || null)),
-    removeItem: jest.fn((key) => Promise.resolve(null)),
-    clear: jest.fn(() => Promise.resolve(null)),
-    getAllKeys: jest.fn(() => Promise.resolve(Object.keys(storage))),
-    multiGet: jest.fn((keys) => Promise.resolve(keys.map(key => [key, storage[key] || null]))),
-    multiSet: jest.fn((keyValuePairs) => Promise.resolve(null)),
-  };
-});
+// React Native 문제가 되는 컴포넌트들만 mock
+jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
 
-// 추가적인 네이티브 모듈 모킹
-jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
-  // 여기에 필요한 Reanimated 함수 추가
-  return Reanimated;
-});
+// 불필요한 경고 메시지들 숨기기
+const originalConsoleWarn = console.warn;
+console.warn = (...args) => {
+  if (
+    typeof args[0] === 'string' &&
+    (args[0].includes('ProgressBarAndroid') ||
+     args[0].includes('Clipboard') ||
+     args[0].includes('has been extracted from react-native'))
+  ) {
+    return;
+  }
+  originalConsoleWarn(...args);
+};
 
-jest.mock('react-native-gesture-handler', () => {
-  return {
-    PanGestureHandler: 'PanGestureHandler',
-    State: {
-      ACTIVE: 'ACTIVE',
-      END: 'END'
-    }
-  };
-});
-
-// Console mocks (선택사항)
+// Console error/warn을 더 조용하게 (선택사항)
 console.error = jest.fn();
-console.warn = jest.fn();
-
-// React hooks 모킹
-jest.mock('react', () => {
-  const originalReact = jest.requireActual('react');
-  return {
-    ...originalReact,
-    useState: jest.fn().mockImplementation(initialValue => [initialValue, jest.fn()]),
-    useEffect: jest.fn().mockImplementation(fn => fn()),
-    useContext: jest.fn(),
-    useRef: jest.fn().mockReturnValue({ current: null }),
-    useCallback: jest.fn().mockImplementation((fn) => fn),
-    useMemo: jest.fn().mockImplementation((fn) => fn()),
-  };
-});

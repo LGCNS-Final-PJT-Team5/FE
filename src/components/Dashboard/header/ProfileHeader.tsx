@@ -21,7 +21,7 @@ export default function ProfileHeader({
 
     try {
       useUserStore.getState().setAlarm(newValue); // 상태 업데이트
-      userService.updateAlarm(newValue);
+      await userService.updateAlarm(newValue);
       setIsEnabled(newValue); // 로컬 UI 상태 반영
     } catch (error) {
       console.error('알림 설정 변경 실패:', error);

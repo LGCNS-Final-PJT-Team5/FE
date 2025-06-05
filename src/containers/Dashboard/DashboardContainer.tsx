@@ -11,56 +11,49 @@ import {dashboardService} from '../../services/api/dashboardService';
 export default function DashboardContainer() {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
-  // const user = useUserStore(state => state.user);
-  // const hasHydrated = useUserStore(state => state.hasHydrated);
+  const user = useUserStore(state => state.user);
+  const hasHydrated = useUserStore(state => state.hasHydrated);
 
-  const [userInfo, setUserInfo] = useState<UserResponse | null>({
-    reward: 0,
-    nickname: 'rr',
-    name:'ff',
-    email: 'fdf#dfsdf.sdf',
-    alarm: true
-  });
+  const [userInfo, setUserInfo] = useState<UserResponse | null>(null);
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // if (hasHydrated) {
-      // setUserInfo(user);
-      // setIsEnabled(user.alarm);
-      setIsEnabled(false);
+    if (hasHydrated && user) {
+      setUserInfo(user);
+      setIsEnabled(user.alarm);
 
       const fetchDashboard = async () => {
         try {
           const data = await dashboardService.getDashboard();
+          console.log('✅ 대시보드 데이터 성공:', data);
           setDashboard(data);
         } catch (error) {
           console.error('대시보드 데이터 가져오기 실패:', error);
           Alert.alert('오류', '대시보드 데이터를 불러오는 데 실패했습니다.');
         } finally {
+          console.log('로딩 완료 처리');
           setLoading(false);
         }
       };
 
       fetchDashboard();
-    // }
+    }
+  }, [hasHydrated, user]);
 
+  if (!hasHydrated || loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6366F1" />
+        <Text style={styles.loadingText}>
+          대시보드 정보를 불러오는 중입니다.
+        </Text>
+      </View>
+    );
+  }
 
-  }, [dashboard]);
-
-  // if (!hasHydrated || loading) {
-  //   return (
-  //     <View style={styles.loadingContainer}>
-  //       <ActivityIndicator size="large" color="#6366F1" />
-  //       <Text style={styles.loadingText}>
-  //         대시보드 정보를 불러오는 중입니다.
-  //       </Text>
-  //     </View>
-  //   );
-  // }
-
-  if (!dashboard) {
+  if (!userInfo || !dashboard) {
     return null;
   }
 
