@@ -1,7 +1,8 @@
 import { create } from 'zustand';
-import axios from 'axios';
+import api from '../lib/axios'; // 중앙화된 axios 인스턴스 사용
 import { DrivingDetailData } from '../types/driving';
 import env from '../config/env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API 응답 인터페이스 정의
 interface DriveDetailResponse {
@@ -45,16 +46,35 @@ export const useDrivingDetailStore = create<DrivingDetailState>((set) => ({
     try {
       set({ isLoading: true, error: null });
       
-      // 올바른 API URL 참조 방식으로 변경
-      const response = await axios.get(env.API.DRIVING.DETAIL(driveId), {
-        headers: {
-          'X-User-Id': userId
-        }
-      });
+      // AsyncStorage에서 직접 토큰 가져오기 (안정성 높임)
+      const token = await AsyncStorage.getItem('jwtToken');
       
-      const apiData: DriveDetailResponse = response.data;
+      console.log(`Fetching drive detail for ID: ${driveId}`);
+      console.log(`Authorization token: ${token ? 'Found' : 'Not found'}`);
       
-      // API 데이터를 UI에 맞는 형식으로 변환
+      // 요청 헤더 설정
+      const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
+      
+      // 토큰이 있으면 Authorization 헤더 추가
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      // X-User-Id 헤더도 추가 (필요한 경우)
+      if (userId) {
+        headers['X-User-Id'] = userId;
+      }
+      
+      const response = await api.get(env.API.DRIVING.DETAIL(driveId), { headers });
+      
+      console.log("API 응답:", response.status, response.statusText);
+      
+      const apiData = response.data;
+      
+      // 데이터 변환 및 설정
       const formattedData: DrivingDetailData = {
         date: formatDate(apiData.startTime),
         time: formatTimeRange(apiData.startTime, apiData.endTime),
@@ -87,6 +107,14 @@ export const useDrivingDetailStore = create<DrivingDetailState>((set) => ({
       set({ driveDetail: formattedData, isLoading: false });
     } catch (error) {
       console.error('Failed to fetch drive detail:', error);
+      
+      if (error.response) {
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', error.response.data);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+      }
+      
       set({ 
         error: '주행 상세 정보를 가져오는데 실패했습니다.',
         isLoading: false 

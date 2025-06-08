@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import axios from 'axios';
+import api from '../lib/axios'; // 중앙화된 인스턴스 사용
 import env from '../config/env';
 
 // 주의력 리포트 데이터 타입 정의
@@ -38,12 +38,12 @@ const useAttentionReportStore = create<AttentionReportState>((set) => ({
     try {
       set({ loading: true, error: null });
       
-      // 중앙화된 API URL 사용
-      const response = await axios.get(env.API.DRIVING.ATTENTION_REPORT(driveId), {
-        headers: {
-          'X-User-Id': '1' // 사용자 ID 추가
-        }
-      });
+      console.log(`주의력 점수 리포트 요청: ${driveId}`);
+      
+      // 중앙화된 api 인스턴스 사용
+      const response = await api.get(env.API.DRIVING.ATTENTION_REPORT(driveId));
+      
+      console.log('주의력 점수 API 응답 상태:', response.status);
       
       // 성공 시 데이터 저장
       set({ 
@@ -51,8 +51,15 @@ const useAttentionReportStore = create<AttentionReportState>((set) => ({
         loading: false 
       });
     } catch (error) {
-      // 에러 처리
+      // 에러 처리 상세화
       console.error('주의력 점수 데이터 가져오기 실패:', error);
+      
+      // 상세 오류 정보 출력
+      if (error.response) {
+        console.error('Error status:', error.response.status);
+        console.error('Error data:', error.response.data);
+      }
+      
       set({ 
         error: '주의력 점수 데이터를 불러오는 중 오류가 발생했습니다.', 
         loading: false 

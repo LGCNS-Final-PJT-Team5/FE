@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import axios from 'axios';
+import api from '../lib/axios'; // 중앙화된 axios 인스턴스 사용
 import env from '../config/env';
 import { DriveHistoryItem } from '../types/driving';
 
@@ -20,17 +20,13 @@ export const useDrivingHistoryStore = create<DrivingHistoryState>((set, get) => 
     try {
       set({ isLoading: true, error: null });
       
-      // 디버깅 메시지 추가
       console.log("=== 네트워크 요청 시작 ===");
       console.log(`API URL: ${env.API.DRIVING.HISTORY}`);
       
-      // 2. 타임아웃 설정 추가 (5초)
-      const response = await axios.get(env.API.DRIVING.HISTORY, {
-        headers: { 'X-User-Id': '1' },
-        timeout: 5000
-      });
+      // api 인스턴스 사용
+      const response = await api.get(env.API.DRIVING.HISTORY);
       
-      console.log("API 응답 전체:", JSON.stringify(response));
+      // 로그 추가
       console.log("API 응답 상태:", response.status);
       console.log("API 응답 데이터:", response.data);
       
@@ -65,7 +61,7 @@ export const useDrivingHistoryStore = create<DrivingHistoryState>((set, get) => 
       set({ isLoading: false });
       
       // 에러 상세 정보 제공
-      if (axios.isAxiosError(error)) {
+      if (api.isAxiosError(error)) {
         // 요청 실패한 URL 로깅
         console.error("요청 실패한 URL:", error.config?.url);
         console.error("요청 헤더:", error.config?.headers);

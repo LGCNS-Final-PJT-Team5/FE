@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import axios from 'axios';
+import api from '../lib/axios';
 import env from '../config/env';
 
 // 타입 정의
@@ -45,27 +45,27 @@ const useEcoReportStore = create<EcoReportState>((set) => ({
     try {
       set({ loading: true, error: null });
       
-      // API 호출
-      const response = await axios.get(
-        env.API.DRIVING.ECO_REPORT(driveId),
-        {
-          headers: {
-            'X-User-Id': '1', // 사용자 ID 헤더 추가
-          }
-        }
-      );
+      console.log(`탄소 배출 리포트 요청: ${driveId}`);
       
-      // 데이터 저장
-      set({ 
-        data: response.data, 
-        loading: false 
-      });
+      // API 호출 - 중앙화된 api 인스턴스 사용, 토큰은 인터셉터에서 처리
+      const response = await api.get(env.API.DRIVING.ECO_REPORT(driveId));
+      
+      console.log('탄소 배출 API 응답 상태:', response.status);
+      
+      set({ data: response.data, loading: false });
       
     } catch (error) {
       console.error('탄소 배출 보고서 데이터 로딩 오류:', error);
+      
+      // 상세 오류 정보 출력
+      if (error.response) {
+        console.error('Error status:', error.response.status);
+        console.error('Error data:', error.response.data);
+      }
+      
       set({ 
         loading: false, 
-        error: error instanceof Error ? error.message : '데이터 로딩 중 오류가 발생했습니다' 
+        error: error instanceof Error ? error.message : '데이터 로딩 중 오류가 발생했습니다'
       });
     }
   },
