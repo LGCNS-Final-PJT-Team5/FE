@@ -3,7 +3,6 @@ import {render, waitFor} from '@testing-library/react-native';
 import App from '../App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuthStore} from '../src/store/useAuthStore';
-import {useUserStore} from '../src/store/useUserStore';
 
 // Mock dependencies
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -18,56 +17,17 @@ jest.mock('../src/store/useAuthStore', () => ({
   useAuthStore: jest.fn(),
 }));
 
-jest.mock('../src/store/useUserStore', () => ({
-  useUserStore: {
-    getState: jest.fn(),
-  },
-}));
-
 // Mock navigation components
 jest.mock('@react-navigation/native', () => ({
   NavigationContainer: ({children}: {children: any}) => children,
 }));
 
-jest.mock('@react-navigation/native-stack', () => ({
-  createNativeStackNavigator: () => ({
-    Navigator: ({children}: {children: any}) => {
-      const React = require('react');
-      return React.createElement('View', {testID: 'stack-navigator'}, children);
-    },
-    Screen: ({name, component: Component}: {name: string; component: any}) => {
-      const React = require('react');
-      return React.createElement(Component, {
-        testID: `screen-${name.toLowerCase()}`,
-      });
-    },
-  }),
-}));
-
-// Mock containers and navigators
-jest.mock('../src/services/navigation/TabNavigator', () => {
+jest.mock('../src/services/navigation/AppNavigator', () => {
   return {
     __esModule: true,
     default: () => {
       const React = require('react');
-      return React.createElement('View', {testID: 'tab-navigator'});
-    },
-  };
-});
-
-jest.mock('../src/containers/Register/SocialLoginContainer', () => ({
-  SocialLoginContainer: () => {
-    const React = require('react');
-    return React.createElement('View', {testID: 'social-login-container'});
-  },
-}));
-
-jest.mock('../src/containers/Register/RegisterContainer', () => {
-  return {
-    __esModule: true,
-    default: () => {
-      const React = require('react');
-      return React.createElement('View', {testID: 'register-container'});
+      return React.createElement('View', {testID: 'app-navigator'});
     },
   };
 });
@@ -83,25 +43,22 @@ jest.mock('@react-native-firebase/messaging', () => {
     getToken: jest.fn(),
     setBackgroundMessageHandler: jest.fn(),
     onMessage: jest.fn(),
-  };
-
-  // AuthorizationStatus enum from actual types
-  const AuthorizationStatus = {
-    NOT_DETERMINED: -1,
-    DENIED: 0,
-    AUTHORIZED: 1,
-    PROVISIONAL: 2,
-    EPHEMERAL: 3,
+    AuthorizationStatus: {
+      NOT_DETERMINED: -1,
+      DENIED: 0,
+      AUTHORIZED: 1,
+      PROVISIONAL: 2,
+      EPHEMERAL: 3,
+    },
   };
 
   // Default export function with statics attached
   const messagingFunction = () => mockMessaging;
-  messagingFunction.AuthorizationStatus = AuthorizationStatus;
+  messagingFunction.AuthorizationStatus = mockMessaging.AuthorizationStatus;
 
   return {
     __esModule: true,
     default: messagingFunction,
-    AuthorizationStatus,
   };
 });
 
@@ -152,7 +109,6 @@ jest.mock('react-native', () => ({
 
 // Mock store functions and get references to the mocked functions
 const mockSetIsLoggedIn = jest.fn();
-const mockUserReset = jest.fn();
 const mockUseAuthStore = useAuthStore as jest.MockedFunction<
   typeof useAuthStore
 >;
@@ -168,17 +124,6 @@ beforeAll(() => {
   mockNotifee = require('@notifee/react-native').default;
 });
 
-// Type-safe UserStore mock with correct interface
-const mockUserStore = {
-  user: null,
-  setUser: jest.fn(),
-  clearUser: jest.fn(),
-  setAlarm: jest.fn(),
-  reset: mockUserReset,
-  hasHydrated: false,
-  setHasHydrated: jest.fn(),
-};
-
 describe('App', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -193,44 +138,26 @@ describe('App', () => {
       return selector(state);
     });
 
-    // Mock useUserStore
-    (useUserStore.getState as jest.Mock).mockReturnValue(mockUserStore);
-
     // Mock AsyncStorage
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     (AsyncStorage.multiRemove as jest.Mock).mockResolvedValue(undefined);
+
+    // Reset Firebase mocks
+    mockMessaging.requestPermission.mockResolvedValue(1); // AUTHORIZED by default
+    mockMessaging.getToken.mockResolvedValue('firebase-token-123');
+
+    // Reset React Native mocks
+    const {PermissionsAndroid} = require('react-native');
+    PermissionsAndroid.request.mockResolvedValue('granted');
   });
 
   describe('App 컴포넌트 렌더링', () => {
     it('App이 정상적으로 렌더링된다', () => {
-      const {queryByTestId} = render(<App />);
-      expect(queryByTestId).toBeDefined();
+      const {getByTestId} = render(<App />);
+      expect(getByTestId('app-navigator')).toBeTruthy();
     });
 
-    it('로그인하지 않았을 때 로그인 화면들이 렌더링된다', () => {
-      mockUseAuthStore.mockImplementation(selector => {
-        const state = {
-          isLoggedIn: false,
-          setIsLoggedIn: mockSetIsLoggedIn,
-          logout: jest.fn(),
-        };
-        return selector(state);
-      });
-
-      const component = render(<App />);
-      expect(component).toBeDefined();
-    });
-
-    it('로그인했을 때 메인 화면이 렌더링된다', () => {
-      mockUseAuthStore.mockImplementation(selector => {
-        const state = {
-          isLoggedIn: true,
-          setIsLoggedIn: mockSetIsLoggedIn,
-          logout: jest.fn(),
-        };
-        return selector(state);
-      });
-
+    it('SafeAreaProvider로 감싸져 있다', () => {
       const component = render(<App />);
       expect(component).toBeDefined();
     });
@@ -372,27 +299,101 @@ describe('App', () => {
   });
 
   describe('알림 표시 로직', () => {
-    it.skip('허용된 채널로 알림이 표시된다', async () => {
-      // onMessage 콜백 시뮬레이션 필요 - 복잡함
+    it('허용된 채널로 알림이 표시된다', async () => {
+      const mockRemoteMessage = {
+        data: {
+          channel: 'crash',
+          title: 'Test Title',
+          body: 'Test Body',
+        },
+      };
+
+      render(<App />);
+
+      // setBackgroundMessageHandler에 전달된 콜백 함수 가져오기
+      await waitFor(() => {
+        expect(mockMessaging.setBackgroundMessageHandler).toHaveBeenCalled();
+      });
+
+      const backgroundHandler =
+        mockMessaging.setBackgroundMessageHandler.mock.calls[0][0];
+
+      // 핸들러 실행
+      await backgroundHandler(mockRemoteMessage);
+
+      expect(mockNotifee.displayNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'Test Title',
+          body: 'Test Body',
+          android: expect.objectContaining({
+            channelId: 'crash',
+            sound: 'crash',
+            importance: 4,
+          }),
+        }),
+      );
     });
 
-    it.skip('허용되지 않은 채널은 default로 처리된다', async () => {
-      // onMessage 콜백 시뮬레이션 필요 - 복잡함
+    it('허용되지 않은 채널은 default로 처리된다', async () => {
+      const mockRemoteMessage = {
+        data: {
+          channel: 'unknown',
+          title: 'Test Title',
+          body: 'Test Body',
+        },
+      };
+
+      render(<App />);
+
+      await waitFor(() => {
+        expect(mockMessaging.setBackgroundMessageHandler).toHaveBeenCalled();
+      });
+
+      const backgroundHandler =
+        mockMessaging.setBackgroundMessageHandler.mock.calls[0][0];
+      await backgroundHandler(mockRemoteMessage);
+
+      expect(mockNotifee.displayNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          android: expect.objectContaining({
+            channelId: 'default',
+            sound: 'default',
+          }),
+        }),
+      );
     });
 
-    it.skip('유니크한 알림 ID가 생성된다', async () => {
-      // onMessage 콜백 시뮬레이션 필요 - 복잡함
+    it('유니크한 알림 ID가 생성된다', async () => {
+      const mockRemoteMessage = {
+        data: {
+          channel: 'crash',
+          title: 'Test Title',
+          body: 'Test Body',
+        },
+      };
+
+      render(<App />);
+
+      await waitFor(() => {
+        expect(mockMessaging.setBackgroundMessageHandler).toHaveBeenCalled();
+      });
+
+      const backgroundHandler =
+        mockMessaging.setBackgroundMessageHandler.mock.calls[0][0];
+      await backgroundHandler(mockRemoteMessage);
+
+      expect(mockNotifee.displayNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: expect.stringMatching(/^crash_\d+$/),
+        }),
+      );
     });
   });
 });
 
-// 컴포넌트 직접 렌더링 테스트는 생략하고 단순 테스트만 수행
+// 기본 테스트
 describe('App 기본 테스트', () => {
   it('기본 테스트만 실행', () => {
-    // 간단한 테스트만 실행
     expect(true).toBe(true);
   });
 });
-
-// App 컴포넌트 자체는 테스트하지 않음 (네이티브 의존성 때문에)
-jest.mock('../App', () => 'App');
