@@ -20,8 +20,17 @@ export const MypageProfile = ({name, car}: ProfileProps) => {
           <MaterialIcons name={'person'} size={32} color={'white'} />
         </View>
         <View style={styles.profileDetails}>
-          <Text style={styles.profileName}>{name || '사용자'}</Text>
-          <Text style={styles.profileCar}>{car || '등록된 차량 없음'}</Text>
+          <View style={styles.nameContainer}>
+            <Text style={styles.profileName}>{name || '사용자'}</Text>
+            <Text style={styles.greetingText}>님, 반가워요!</Text>
+          </View>
+          {car && car !== '등록된 차량 없음' ? (
+            <View style={styles.carContainer}>
+              <Text style={styles.profileCar}>현재 차량: {car}</Text>
+            </View>
+          ) : (
+            <Text style={styles.noCarText}>차량을 등록해주세요</Text>
+          )}
         </View>
       </View>
     </LinearGradient>
@@ -49,14 +58,42 @@ const styles = StyleSheet.create({
   profileDetails: {
     flex: 1,
   },
+  nameContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 4,
+  },
   profileName: {
     fontSize: 22,
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: 4,
+  },
+  greetingText: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.9)',
+    marginLeft: 4,
+    fontWeight: '400',
+  },
+  carContainer: {
+    marginTop: 4,
+    alignSelf: 'flex-start',
   },
   profileCar: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '500',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+    overflow: 'hidden',
+  },
+  noCarText: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.7)',
+    fontStyle: 'italic',
+    marginTop: 2,
   },
 });
