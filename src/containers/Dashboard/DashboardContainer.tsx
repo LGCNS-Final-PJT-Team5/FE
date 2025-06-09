@@ -62,21 +62,25 @@ export default function DashboardContainer() {
     return null;
   }
 
+  const formatScore = (score) => {
+    return typeof score === 'number' ? Number(score.toFixed(2)) : score;
+  };
+
   const drivingReportData = [
     {
       title: '탄소 배출 및 연비 점수',
       color: '#1E40AF',
       backgroundColor: '#EFF6FF',
       textColor: '#1E40AF',
-      score: dashboard.scores.ecoScore,
+      score: formatScore(dashboard.scores.ecoScore),
       data: [
         {
-          value: dashboard.scores.idlingScore,
+          value: formatScore(dashboard.scores.idlingScore),
           color: '#3B82F6',
           label: {text: '공회전'},
         },
         {
-          value: dashboard.scores.speedMaintainScore,
+          value: formatScore(dashboard.scores.speedMaintainScore),
           color: '#60A5FA',
           label: {text: '정속주행 비율'},
         },
@@ -87,20 +91,20 @@ export default function DashboardContainer() {
       color: '#166534',
       backgroundColor: '#F0FDF4',
       textColor: '#166534',
-      score: dashboard.scores.safetyScore,
+      score: formatScore(dashboard.scores.safetyScore),
       data: [
         {
-          value: dashboard.scores.accelerationScore,
+          value: formatScore(dashboard.scores.accelerationScore),
           color: '#22C55E',
           label: {text: '급가/감속'},
         },
         {
-          value: dashboard.scores.sharpTurnScore,
+          value: formatScore(dashboard.scores.sharpTurnScore),
           color: '#4ADE80',
           label: {text: '급회전'},
         },
         {
-          value: dashboard.scores.overSpeedScore,
+          value: formatScore(dashboard.scores.overSpeedScore),
           color: '#86EFAC',
           label: {text: '과속'},
         },
@@ -111,20 +115,20 @@ export default function DashboardContainer() {
       color: '#7C2D92',
       backgroundColor: '#FAF5FF',
       textColor: '#7C2D92',
-      score: dashboard.scores.accidentPreventionScore,
+      score: formatScore(dashboard.scores.accidentPreventionScore),
       data: [
         {
-          value: dashboard.scores.reactionScore,
+          value: formatScore(dashboard.scores.reactionScore),
           color: '#A855F7',
           label: {text: '반응 속도'},
         },
         {
-          value: dashboard.scores.laneDepartureScore,
+          value: formatScore(dashboard.scores.laneDepartureScore),
           color: '#C084FC',
           label: {text: '차선이탈'},
         },
         {
-          value: dashboard.scores.followingDistanceScore,
+          value: formatScore(dashboard.scores.followingDistanceScore),
           color: '#DDD6FE',
           label: {text: '안전거리 유지'},
         },
@@ -135,15 +139,15 @@ export default function DashboardContainer() {
       color: '#A16207',
       backgroundColor: '#FFFBEB',
       textColor: '#A16207',
-      score: dashboard.scores.attentionScore,
+      score: formatScore(dashboard.scores.attentionScore),
       data: [
         {
-          value: dashboard.scores.drivingTimeScore,
+          value: formatScore(dashboard.scores.drivingTimeScore),
           color: '#EAB308',
           label: {text: '운전시간'},
         },
         {
-          value: dashboard.scores.inactivityScore,
+          value: formatScore(dashboard.scores.inactivityScore),
           color: '#FDE047',
           label: {text: '미조작 시간'},
         },
