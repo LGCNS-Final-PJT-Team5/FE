@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {MypageCard} from '../../components/Mypage/MypageCard.tsx';
 import {MypageProfile} from '../../components/Mypage/MypageProfile.tsx';
 
@@ -21,25 +21,25 @@ export default function MypageScreen({
     {
       nav: 'MypageCar',
       name: '내 차 정보',
-      iconSet: 'MaterialCommunityIcons',
-      iconName: 'car',
+      iconSet: 'MaterialIcons',
+      iconName: 'directions-car',
     },
     {
       nav: 'MypageInfo',
       name: '내 정보',
-      iconSet: 'Feather',
-      iconName: 'user',
+      iconSet: 'MaterialIcons',
+      iconName: 'person',
     },
     {
       nav: 'MypageInterest',
       name: '내 관심사',
-      iconSet: 'Feather',
-      iconName: 'heart',
+      iconSet: 'MaterialIcons',
+      iconName: 'favorite',
     },
     {
       name: '로그아웃',
-      iconSet: 'Feather',
-      iconName: 'log-out',
+      iconSet: 'MaterialIcons',
+      iconName: 'logout',
       isLogout: true,
     },
   ];
@@ -47,28 +47,35 @@ export default function MypageScreen({
   return (
     <View style={styles.container}>
       <MypageProfile name={nickname} car={car} />
-      <Text style={styles.sectionTitle}>계정</Text>
-      {navInfo.map((item, index) => {
-        return (
-          <MypageCard
-            key={index}
-            index={index}
-            item={item}
-            navigation={navigation}
-            onLogout={onLogout}
-          />
-        );
-      })}
+      <View style={styles.menuContainer}>
+        <Text style={styles.sectionTitle}>계정</Text>
+        {navInfo.map((item, index) => {
+          return (
+            <MypageCard
+              key={index}
+              index={index}
+              item={item}
+              navigation={navigation}
+              onLogout={onLogout}
+            />
+          );
+        })}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+    backgroundColor: '#ffffff', // 흰색으로 변경
+  },
+  menuContainer: {
     backgroundColor: '#fff',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 20,
+    marginTop: 0,
   },
   sectionTitle: {
     fontSize: 14,

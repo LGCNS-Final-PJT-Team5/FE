@@ -1,6 +1,7 @@
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type ProfileProps = {
   name: string;
@@ -9,44 +10,90 @@ type ProfileProps = {
 
 export const MypageProfile = ({name, car}: ProfileProps) => {
   return (
-    <View style={styles.profile}>
-      <EvilIcons
-        name={'user'}
-        size={70}
-        color={'#c4c4c4'}
-        style={styles.profileImage}
-      />
-      <View style={{gap: 3}}>
-        <Text style={styles.profileName}>{name}</Text>
-        <Text style={styles.profileCar}>{car}</Text>
+    <LinearGradient
+      colors={['#5B9BF8', '#7B6EEB']}
+      // colors={['#3b82f6', '#635de6']}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 0}}>
+      <View style={styles.profileContent}>
+        <View style={styles.profileAvatarContainer}>
+          <MaterialIcons name={'person'} size={32} color={'white'} />
+        </View>
+        <View style={styles.profileDetails}>
+          <View style={styles.nameContainer}>
+            <Text style={styles.profileName}>{name || '사용자'}</Text>
+            <Text style={styles.greetingText}>님, 반가워요!</Text>
+          </View>
+          {car && car !== '등록된 차량 없음' ? (
+            <View style={styles.carContainer}>
+              <Text style={styles.profileCar}>현재 차량: {car}</Text>
+            </View>
+          ) : (
+            <Text style={styles.noCarText}>차량을 등록해주세요</Text>
+          )}
+        </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  profile: {
-    width: '100%',
+  profileContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 15,
-    marginBottom: 30,
-    padding: 10,
-    backgroundColor: '#F1F5FD',
+    paddingHorizontal: 20,
+    paddingVertical: 24,
   },
-
-  profileImage: {
-    padding: 5,
+  profileAvatarContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+    marginRight: 16,
   },
-
+  profileDetails: {
+    flex: 1,
+  },
+  nameContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 4,
+  },
   profileName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#3F5AF0',
+    color: 'white',
   },
-
+  greetingText: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.9)',
+    marginLeft: 4,
+    fontWeight: '400',
+  },
+  carContainer: {
+    marginTop: 4,
+    alignSelf: 'flex-start',
+  },
   profileCar: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    color: 'white',
     fontSize: 12,
-    color: '#B3B3B3',
+    fontWeight: '500',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+    overflow: 'hidden',
+  },
+  noCarText: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.7)',
+    fontStyle: 'italic',
+    marginTop: 2,
   },
 });
