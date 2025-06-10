@@ -36,18 +36,21 @@ const DrivingDetailContainer: React.FC = () => {
   };
 
   const handleCardPress = (cardName: string) => {
+    // 디버깅 로그 추가
+    console.log(`카드 클릭: ${cardName}, driveId: ${drivingId}`);
+
     switch (cardName) {
       case '안전 운전 점수':
-        navigation.navigate('SafetyReport');
+        navigation.navigate('SafetyReport', { driveId: drivingId });
         break;
       case '탄소 배출 및 연비 점수':
-        navigation.navigate('CarbonEmissionReport');
+        navigation.navigate('CarbonEmissionReport', { driveId: drivingId });
         break;
       case '사고 예방 점수':
-        navigation.navigate('AccidentPreventionReport');
+        navigation.navigate('AccidentPreventionReport', { driveId: drivingId });
         break;
       case '주의력 점수':
-        navigation.navigate('AttentionScoreReport');
+        navigation.navigate('AttentionScoreReport', { driveId: drivingId });
         break;
     }
   };

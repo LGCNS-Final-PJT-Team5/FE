@@ -9,6 +9,7 @@ import {useAuthStore} from './src/store/useAuthStore';
 
 function App(): React.JSX.Element {
   const setIsLoggedIn = useAuthStore(state => state.setIsLoggedIn);
+  const isLoggedIn = useAuthStore(state => state.isLoggedIn);
 
   async function showLocalNotification(remoteMessage) {
     const channel =
@@ -109,7 +110,7 @@ function App(): React.JSX.Element {
     createIdleChannel();
     createLineoutChannel();
     createOverspeedChannel();
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     const checkToken = async () => {
