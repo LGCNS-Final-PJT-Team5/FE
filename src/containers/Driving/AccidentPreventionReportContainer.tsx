@@ -55,7 +55,7 @@ const AccidentPreventionReportContainer: React.FC = () => {
           return {
             id: index,
             time: date,
-            formattedTime: `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`,
+            formattedTime: `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`,
             value: Math.random() * 2 + 1 // 임의 반응 시간 (1~3초)
           };
         });
@@ -71,7 +71,7 @@ const AccidentPreventionReportContainer: React.FC = () => {
           return {
             id: index,
             time: date,
-            formattedTime: `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`,
+            formattedTime: `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`,
             side: Math.random() > 0.5 ? '좌측' : '우측' // 임의 이탈 방향
           };
         });
@@ -87,7 +87,7 @@ const AccidentPreventionReportContainer: React.FC = () => {
           return {
             id: index,
             time: date,
-            formattedTime: `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`,
+            formattedTime: `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`,
             distance: Math.random() * 10 + 5 // 임의 거리 (5~15m)
           };
         });

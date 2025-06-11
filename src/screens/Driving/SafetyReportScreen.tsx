@@ -66,6 +66,7 @@ const SafetyReportScreen: React.FC<SafetyReportScreenProps> = ({
             data={formattedBarData} 
             title={safetyData.acceleration.title} 
             height={chartConfig.lineChartHeight} 
+            count={safetyData.acceleration.count} // 급가감속 횟수 추가
           />
         ) : (
           <Text>차트 데이터가 없습니다.</Text>
@@ -253,6 +254,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     fontWeight: '500',
+  },
+  countText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333'
   },
 });
 

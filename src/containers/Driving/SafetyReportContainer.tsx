@@ -3,6 +3,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import SafetyReportScreen from '../../screens/Driving/SafetyReportScreen';
 import { processSafetyData } from '../../utils/chartDataProcessor';
 import useSafetyReportStore from '../../store/useSafetyReportStore';
+import { SAFETY_COLORS } from '../../theme/colors'; // 누락된 import 추가
 
 const TAB_OPTIONS = ['급가감속', '급회전', '과속'];
 
@@ -17,6 +18,7 @@ const SafetyReportContainer: React.FC = () => {
   const [formattedBarData, setFormattedBarData] = useState([]);
   const [pieData, setPieData] = useState([]);
   const [formattedLineData, setFormattedLineData] = useState([]);
+  const [accelerationCount, setAccelerationCount] = useState(0); // 상태 추가
 
   // driveId는 route params에서 가져오거나 기본값 사용
   const driveId = route.params?.driveId || '1';
@@ -109,6 +111,52 @@ const SafetyReportContainer: React.FC = () => {
     }
   }, [data]);
 
+  // 급가감속 이벤트 데이터 포맷팅 - 시간에 따른 이벤트 발생
+  const formatAccelerationData = (data) => {
+    if (!data || !data.graph || !Array.isArray(data.graph)) {
+      return {
+        events: [],
+        count: 0
+      };
+    }
+    
+    // 이벤트 횟수 추적
+    const eventCount = data.graph.length;
+    
+    // 모든 이벤트를 '급가감속'으로 표시
+    const events = data.graph.map((timestamp, index) => {
+      // 타임스탬프 문자열을 Date로 변환
+      const eventDate = new Date(timestamp);
+      const formattedTime = `${eventDate.getHours().toString().padStart(2, '0')}:${eventDate.getMinutes().toString().padStart(2, '0')}`;
+      
+      return {
+        time: timestamp,
+        value: 70, // 모든 이벤트에 동일한 높이 적용
+        label: `급가감속 ${index + 1}`,
+        detail: `${formattedTime}에 발생`,
+        color: SAFETY_COLORS.chart.orange,
+        // 각 항목에 최소 너비 추가하여 겹치지 않도록 함
+        minWidth: 80
+      };
+    });
+    
+    return {
+      events,
+      count: eventCount
+    };
+  };
+
+  // useEffect 내에서 데이터 처리 시 수정
+  useEffect(() => {
+    if (data) {
+      const formattedResult = formatAccelerationData(data.acceleration);
+      setFormattedBarData(formattedResult.events);
+      setAccelerationCount(formattedResult.count);
+      
+      // 이하 다른 데이터 처리 로직...
+    }
+  }, [data]);
+
   // 탭 선택 핸들러
   const handleTabSelect = (tab) => {
     setSelectedTab(tab);
@@ -135,6 +183,7 @@ const SafetyReportContainer: React.FC = () => {
       formattedLineData={formattedLineData}
       onTabSelect={handleTabSelect}
       onBackPress={handleBackPress}
+      accelerationCount={accelerationCount} // 새로운 props 추가
     />
   );
 };
