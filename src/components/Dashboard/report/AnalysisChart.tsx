@@ -10,9 +10,6 @@ export default function AnalysisChart({
 }) {
   return (
     <>
-      <View style={{alignItems: 'center'}}>
-        <Text style={styles.subTitle}>연비 영향 요소 분석</Text>
-      </View>
       {chartData.map((item, index) => (
         <View key={index}>
           <View

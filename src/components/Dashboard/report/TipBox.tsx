@@ -2,6 +2,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {DrivingRecommendations} from '../../../types/report';
 import RecommendationItem from './RecommendationItem';
+import React from 'react';
 
 export default function TipBox({
   recommendations,
@@ -17,7 +18,7 @@ export default function TipBox({
           size={24}
           color="#3F5AF0"
         />
-        <Text style={styles.tipTitleText}>연비 향상을 위한 맞춤 조언</Text>
+        <Text style={styles.tipTitleText}>{recommendations.title}</Text>
       </View>
 
       {/* 요약 문단 */}

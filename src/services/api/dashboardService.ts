@@ -1,5 +1,5 @@
 import api from '../../lib/axios';
-import { DashboardResponse } from "../../types/dashboard";
+import { DashboardResponse, DrivingReportResponse } from "../../types/dashboard";
 
 class DashboardService {
   async registerDashboard(): Promise<void> {
@@ -10,7 +10,11 @@ class DashboardService {
     const response = await api.get('/dashboard/total');
     return response.data;
   }
-
+  
+  async getDrivingReport(): Promise<DrivingReportResponse> {
+    const response = await api.get('/dashboard/total/report');
+    return response.data;
+  }
 }
 
 export const dashboardService = new DashboardService();

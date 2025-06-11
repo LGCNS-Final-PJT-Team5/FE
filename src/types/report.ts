@@ -245,11 +245,10 @@ export type DrivingTip = {
 };
 
 export type DrivingRecommendations = {
+  title: string;
   summary: string;
-  tips: DrivingTip[];
+  tips: { text: string }[];
 };
-
-// 기존 타입 확장
 
 // 공회전 이벤트 원본 타입
 export interface IdlingEventRaw {

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {DashboardResponse, HomeStackParamList} from '../../types/dashboard';
 import {UserResponse} from '../../types/user';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import DashboardScreen from '../../screens/Dashboard/DashboardScreen';
 import {useUserStore} from '../../store/useUserStore';
 import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
@@ -19,26 +19,25 @@ export default function DashboardContainer() {
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const fetchDashboard = async () => {
+    try {
+      setLoading(true);
+      const data = await dashboardService.getDashboard();
+      console.log('대시보드 데이터 성공:', data);
+      setDashboard(data);
+    } catch (error) {
+      console.warn('대시보드 데이터 가져오기 실패:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     console.log('user 상태:', user);
 
     if (user) {
       setUserInfo(user);
       setIsEnabled(user.alarm);
-
-      const fetchDashboard = async () => {
-        try {
-          const data = await dashboardService.getDashboard();
-          console.log('대시보드 데이터 성공:', data);
-          setDashboard(data);
-        } catch (error) {
-          console.error('대시보드 데이터 가져오기 실패:', error);
-          Alert.alert('오류', '대시보드 데이터를 불러오는 데 실패했습니다.');
-        } finally {
-          setLoading(false);
-        }
-      };
-
       fetchDashboard();
     } else {
       // user가 없으면 로그인 화면으로
@@ -46,6 +45,15 @@ export default function DashboardContainer() {
       logout();
     }
   }, [user]);
+
+  // 탭 포커스될 때마다 데이터 새로고침
+  useFocusEffect(
+    React.useCallback(() => {
+      if (user) {
+        fetchDashboard();
+      }
+    }, [user])
+  );
 
   if (loading) {
     return (

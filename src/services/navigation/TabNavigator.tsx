@@ -42,7 +42,6 @@ function DashboardStack() {
           header: () => (
             <CustomHeader
               leftType="back"
-              rightType="share"
               title="주간 주행 리포트"
             />
           ),

@@ -27,3 +27,23 @@ export type DriveScores = {
   attentionScore: number;
   totalScore: number;
 };
+
+export type Feedback = {
+  title: string;
+  content: string;
+};
+
+export type DetailedFeedback = {
+  title: string;
+  content: string;
+  feedback: string[];
+};
+
+export type DrivingReportResponse = {
+  userId: string;
+  userType: "ECO" | "INSURANCE" | "BEGINNER" | "REWARD" | "MAINTENANCE" | "CARBON" | "DRIVESTAR" | "TECHNIQUE";
+  driveCount: number;
+  scores: DriveScores;
+  totalFeedback: Feedback;
+  detailedFeedback: DetailedFeedback;
+};
