@@ -18,7 +18,7 @@ export default function ReportScreen({
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}>
       <View style={styles.reportBox}>
-        <Text style={styles.titleText}>연비 향상 맞춤 피드백</Text>
+        <Text style={styles.titleText}>{recommendations.title}</Text>
         <AnalysisBox analysis={analysis} />
         <TipBox recommendations={recommendations} />
       </View>
