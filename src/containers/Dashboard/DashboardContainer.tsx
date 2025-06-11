@@ -70,7 +70,7 @@ export default function DashboardContainer() {
     return null;
   }
 
-  const formatScore = (score) => {
+  const formatScore = (score: number) => {
     return typeof score === 'number' ? Number(score.toFixed(2)) : score;
   };
 

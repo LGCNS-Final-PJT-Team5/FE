@@ -91,6 +91,7 @@ export const MypageCard = ({index, item, navigation, onLogout}: CardProps) => {
       style={
         item.isLogout ? styles.EditContainer : styles.EditContainerWithBorder
       }
+      activeOpacity={0.9}
       onPress={() => {
         if (item.nav) {
           navigation.navigate(item.nav);

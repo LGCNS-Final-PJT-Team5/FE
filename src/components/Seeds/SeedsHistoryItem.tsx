@@ -4,6 +4,9 @@ import {SeedHistoryRawItem} from '../../types/seeds';
 
 const formatTime = (isoDate: string) => {
   const date = new Date(isoDate);
+  
+  date.setHours(date.getHours() + 9);
+
   const hh = String(date.getHours()).padStart(2, '0');
   const min = String(date.getMinutes()).padStart(2, '0');
   return `${hh}:${min}`;

@@ -80,20 +80,15 @@ export const getMobtiType = (scores: DriveScores): string => {
   // 모든 점수가 0인 경우 (운전 데이터가 없는 경우) 기본값 반환
   const allScores = Object.values(scores);
   const isAllZero = allScores.every(score => score === 0);
-  
+
   if (isAllZero) {
     return 'DEFAULT';
   }
 
-  const styleScore = (100 - scores.accelerationScore + 100 - scores.sharpTurnScore + 100 - scores.overSpeedScore) / 3;
-  const sensitivityScore = (scores.reactionScore + scores.accelerationScore) / 2;
-  const focusScore = (scores.attentionScore + scores.laneDepartureScore + scores.followingDistanceScore) / 3;
-  const energyScore = (scores.ecoScore + scores.speedMaintainScore + scores.idlingScore) / 3;
-
-  const driving = styleScore >= 50 ? 'D' : 'A';
-  const response = sensitivityScore >= 50 ? 'S' : 'I';
-  const focus = focusScore >= 50 ? 'F' : 'U';
-  const energy = energyScore >= 50 ? 'E' : 'H';
+  const driving = scores.safetyScore >= 50 ? 'D' : 'A';
+  const response = scores.accidentPreventionScore >= 50 ? 'S' : 'I';
+  const focus = scores.attentionScore >= 50 ? 'F' : 'U';
+  const energy = scores.ecoScore >= 50 ? 'E' : 'H';
 
   return `${driving}${response}${focus}${energy}`;
 };
