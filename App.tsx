@@ -21,6 +21,7 @@ const createNotificationChannels = async () => {
     {id: 'safedistance', name: '안전거리 알림', sound: 'safedistance'},
     {id: 'rapidacceleration', name: '급가속 알림', sound: 'rapidacceleration'},
     {id: 'rapiddeceleration', name: '급감속 알림', sound: 'rapiddeceleration'},
+    {id: 'reactiondelay', name: '반응속도 알림', sound: 'reactiondelay'},
     {id: 'default', name: '기본 알림', sound: 'default'},
   ];
 
@@ -59,7 +60,7 @@ const showLocalNotification = async (remoteMessage, userAlarmSetting, isLoggedIn
   const allowedChannels = [
     'crash', 'idle', 'lineout', 'overspeed', 
     'nooperator', 'rapiddeceleration',
-    'rapidacceleration', 'safedistance', 'sharpturn'
+    'rapidacceleration', 'safedistance', 'sharpturn', 'reactiondelay'
   ];
   const useChannel = allowedChannels.includes(channel) ? channel : 'default';
 
