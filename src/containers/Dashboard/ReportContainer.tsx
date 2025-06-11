@@ -46,19 +46,19 @@ export default function ReportContainer() {
               color: getScoreColor(response.scores.ecoScore),
             },
             {
-              label: '안전 점수', 
+              label: '안전 운전 점수', 
               value: Math.round(response.scores.safetyScore),
               color: getScoreColor(response.scores.safetyScore),
             },
             {
-              label: '가속 점수',
-              value: Math.round(response.scores.accelerationScore),
-              color: getScoreColor(response.scores.accelerationScore),
+              label: '사고 예방 점수',
+              value: Math.round(response.scores.accidentPreventionScore),
+              color: getScoreColor(response.scores.accidentPreventionScore),
             },
             {
-              label: '정속 주행',
-              value: Math.round(response.scores.speedMaintainScore),
-              color: getScoreColor(response.scores.speedMaintainScore),
+              label: '주의력 점수',
+              value: Math.round(response.scores.attentionScore),
+              color: getScoreColor(response.scores.attentionScore),
             },
           ],
         };
