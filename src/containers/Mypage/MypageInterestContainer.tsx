@@ -45,8 +45,7 @@ export const MypageInterestContainer = () => {
         title="저장 완료"
         content={['관심사가 저장되었습니다.']}
         onClose={() => setSuccessModalVisible(false)}
-        onConfirm={() => setSuccessModalVisible(false)}
-        confirmText="확인"
+        isAlert
       />
     </>
   );
