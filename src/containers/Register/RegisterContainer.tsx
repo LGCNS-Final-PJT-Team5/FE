@@ -83,6 +83,17 @@ const RegisterContainer = () => {
         return;
       }
 
+      const fcmToken = useAuthStore.getState().fcmToken;
+      if(!fcmToken) {
+        console.warn('fcmToken이 없습니다.');
+        setAlertMessage(
+          '알림 설정이 완료되지 않았습니다.\n다시 시도해주세요.',
+        );
+        setIsRegisterSuccess(false);
+        setShowAlertModal(true);
+        return;
+      }
+
       const payload: RegisterRequest = {
         accessToken,
         nickname,
@@ -91,7 +102,7 @@ const RegisterContainer = () => {
         interest,
       };
 
-      const response = await authService.register(payload);
+      const response = await authService.register(payload, fcmToken);
 
       // 토큰 저장
       await AsyncStorage.setItem('jwtToken', response.accessToken);

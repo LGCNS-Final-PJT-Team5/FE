@@ -15,6 +15,11 @@ const createNotificationChannels = async () => {
     {id: 'idle', name: '공회전 알림', sound: 'idle'},
     {id: 'lineout', name: '차선 이탈 알림', sound: 'lineout'},
     {id: 'overspeed', name: '과속 알림', sound: 'overspeed'},
+    {id: 'no_operator', name: '미조작 알림', sound: 'no_operator'},
+    {id: 'sharp_turn', name: '급회전 알림', sound: 'sharp_turn'},
+    {id: 'safe_distabce', name: '안전거리 미유지 알림', sound: 'safe_distabce'},
+    // {id: 'rapid_acceleration', name: '급가속 알림림', sound: 'rapid_acceleration'},
+    {id: 'rapid_deceleration', name: '급감속 알림', sound: 'rapid_deceleration'},
     {id: 'default', name: '기본 알림', sound: 'default'},
   ];
 
@@ -32,6 +37,7 @@ const createNotificationChannels = async () => {
 
 // 알림 표시 함수
 const showLocalNotification = async (remoteMessage) => {
+  
   const channel =
     remoteMessage.data?.channel ||
     remoteMessage.notification?.android?.channelId ||
@@ -55,7 +61,9 @@ const showLocalNotification = async (remoteMessage) => {
 };
 
 function App(): React.JSX.Element {
+  const isLoggedIn = useAuthStore(state => state.isLoggedIn);
   const setIsLoggedIn = useAuthStore(state => state.setIsLoggedIn);
+  const setFcmToken = useAuthStore(state => state.setFcmToken);
 
   // 앱 초기화 로직을 의존성 배열을 비워 한 번만 실행되도록 수정
   useEffect(() => {
@@ -66,7 +74,7 @@ function App(): React.JSX.Element {
     const checkToken = async () => {
       try {
         const jwtToken = await AsyncStorage.getItem('jwtToken');
-        if (jwtToken) {
+        if (jwtToken && !isLoggedIn) {
           setIsLoggedIn(true);
         }
       } catch (error) {
@@ -96,7 +104,7 @@ function App(): React.JSX.Element {
         if (enabled) {
           const token = await messaging().getToken();
           console.log('FCM 토큰:', token);
-          // TODO: 이 토큰을 서버에 전송하는 로직 추가
+          setFcmToken(token);
         }
       } catch (error) {
         console.error('FCM 토큰 얻기 실패:', error);

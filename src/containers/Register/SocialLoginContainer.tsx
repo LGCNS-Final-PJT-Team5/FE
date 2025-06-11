@@ -23,8 +23,12 @@ export const SocialLoginContainer = () => {
       await AsyncStorage.setItem('accessToken', token.accessToken);
       console.log('카카오 로그인 성공:', token);
 
+      // FCM 토큰 가져오기
+      const fcmToken = useAuthStore.getState().fcmToken;
+      console.log('🎫 현재 FCM 토큰:', fcmToken);
+
       console.log('서버 로그인 요청 시작');
-      const response = await authService.kakaoLogin(token.accessToken);
+      const response = await authService.kakaoLogin(token.accessToken, fcmToken);
       console.log('서버 로그인 응답:', response);
 
       if (response.type === 'login') {

@@ -2,8 +2,17 @@ import { RegisterRequest, TokenRefreshRequest, TokenRefreshResponse } from '../.
 import authApi from '../../lib/authApi';
 
 class AuthService {
-  async kakaoLogin(accessToken: string) {
-    const response = await authApi.post('/auth/kakao-login', { accessToken });
+  async kakaoLogin(accessToken: string, fcmToken?: string | null) {
+    const requestBody: any = { accessToken };
+    
+    // FCM 토큰이 있으면 포함
+    if (fcmToken) {
+      requestBody.fcmToken = fcmToken;
+    }
+    
+    console.log('카카오 로그인 요청 데이터:', requestBody);
+    
+    const response = await authApi.post('/auth/kakao-login', requestBody);
     const { code, message, data } = response.data;
 
     if (code === 200) {
@@ -20,8 +29,13 @@ class AuthService {
     return response.data.data;
   }
 
-  async register(payload: RegisterRequest) {
-    const response = await authApi.post('/auth/register', payload);
+  async register(payload: RegisterRequest, fcmToken?: string) {
+    const requestBody = { 
+      ...payload,
+      fcmToken,
+    };
+
+    const response = await authApi.post('/auth/register', requestBody);
     return response.data.data;
   }
 
