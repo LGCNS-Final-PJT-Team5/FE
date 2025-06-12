@@ -1,6 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,6 +22,9 @@ import {MypageContainer} from '../../containers/Mypage/MypageContainer.tsx';
 import {MypageCarContainer} from '../../containers/Mypage/MypageCarContainer.tsx';
 import {MypageInfoContainer} from '../../containers/Mypage/MypageInfoContainer.tsx';
 import {MypageInterestContainer} from '../../containers/Mypage/MypageInterestContainer.tsx';
+
+// 새로 만든 커스텀 TabBar import
+import CustomTabBar from '../../components/navigation/CustomTabBar';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -164,27 +168,12 @@ function MypageStack() {
 export default function TabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
+      screenOptions={{
         headerShown: false,
-        tabBarIcon: ({color, size}) => {
-          if (route.name === 'Home')
-            return <AntDesign name="home" size={size} color={color} />;
-          if (route.name === 'Drive')
-            return <Feather name="pie-chart" size={size} color={color} />;
-          if (route.name === 'Seed')
-            return (
-              <MaterialCommunity
-                name="seed-outline"
-                size={size}
-                color={color}
-              />
-            );
-          if (route.name === 'User')
-            return <Feather name="user" size={size} color={color} />;
-        },
-        tabBarActiveTintColor: '#4945FF',
-        tabBarInactiveTintColor: 'gray',
-      })}>
+      }}
+      // 커스텀 TabBar 적용
+      tabBar={props => <CustomTabBar {...props} />}
+    >
       <Tab.Screen name="Home">
         {() => (
           <ScreenLayout>

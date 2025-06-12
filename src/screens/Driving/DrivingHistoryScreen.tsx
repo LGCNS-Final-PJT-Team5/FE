@@ -1,5 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native';
+import { 
+  View, 
+  StyleSheet, 
+  SafeAreaView, 
+  StatusBar, 
+  FlatList, 
+  ActivityIndicator,
+  RefreshControl // RefreshControl import 추가
+} from 'react-native';
 import DrivingHistoryItem from '../../components/Driving/DrivingHistoryItem';
 import DrivingHistoryChart from '../../components/Driving/DrivingHistoryChart';
 import { DriveHistoryItem } from '../../types/driving';
@@ -11,13 +19,17 @@ interface DrivingHistoryScreenProps {
   handleDriveItemPress: (driveId: string) => void;
   isLoading: boolean;
   error: string | null;
+  onRefresh: () => void; // 새로고침 함수 prop 추가
+  refreshing: boolean;   // 새로고침 상태 prop 추가
 }
 
 const DrivingHistoryScreen: React.FC<DrivingHistoryScreenProps> = ({ 
   driveHistory = [], // 기본값 제공 
   handleDriveItemPress, 
   isLoading, 
-  error 
+  error,
+  onRefresh,
+  refreshing
 }) => {
   // 로딩 및 에러 처리 추가
   if (isLoading) {
@@ -49,7 +61,7 @@ const DrivingHistoryScreen: React.FC<DrivingHistoryScreenProps> = ({
         <AppText bold style={styles.title}>주행 히스토리</AppText>
         <AppText style={styles.subtitle}>지금까지의 주행 데이터를 확인해 보세요</AppText>
         
-        {(driveHistory?.length ?? 0) === 0 && (
+        {(driveHistory?.length ?? 0) === 0 && !isLoading && !refreshing && (
           <View style={styles.emptyContainer}>
             <AppText style={styles.emptyText}>아직 주행 기록이 없어요</AppText>
           </View>
@@ -71,11 +83,21 @@ const DrivingHistoryScreen: React.FC<DrivingHistoryScreenProps> = ({
                 item={item} 
                 onPress={handleDriveItemPress} 
               />
-            )
-            }
+            )}
             keyExtractor={item => item.driveId}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContentContainer}
+            // 새로고침 컨트롤 추가
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[colors.primary]} // Android
+                tintColor={colors.primary} // iOS
+                title="새로고침 중..." // iOS
+                titleColor={colors.neutralDark} // iOS
+              />
+            }
           />
         </View>
       </View>
