@@ -8,7 +8,7 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 
 const { width } = Dimensions.get('window');
@@ -17,17 +17,23 @@ interface HeaderDropdownProps {
   currentScreen: string;
   textColor?: string;
   primaryColor?: string;
+  driveId?: string; // driveId 옵션으로 추가
 }
 
 const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   currentScreen,
   textColor = '#2D3748',
   primaryColor = '#BB27FF',
+  driveId, // driveId 받기
 }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(-20));
   const navigation = useNavigation();
+  const route = useRoute();
+  
+  // route.params에서 driveId를 얻거나 props로 전달된 것을 사용
+  const currentDriveId = driveId || route.params?.driveId;
 
   const menuItems = [
     { id: 'carbon', title: '탄소 배출 및 연비 점수', route: 'CarbonEmissionReport', color: '#007AFF' },
@@ -37,6 +43,7 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   ];
 
   const toggleDropdown = () => {
+    // 기존 코드 유지
     if (!isDropdownVisible) {
       setIsDropdownVisible(true);
       Animated.parallel([
@@ -71,10 +78,20 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
 
   const navigateToScreen = (routeName: string) => {
     toggleDropdown();
-    if (routeName !== currentScreen) {
+    if (routeName !== route.name) {
       setTimeout(() => {
-        // @ts-ignore - 네비게이션 타입 문제 무시
-        navigation.navigate(routeName);
+        // navigate 대신 replace 사용하여 항상 새 인스턴스 생성
+        // driveId가 있으면 파라미터로 전달
+        if (currentDriveId) {
+          // @ts-ignore - 네비게이션 타입 문제 무시
+          navigation.replace(routeName, { driveId: currentDriveId });
+          console.log(`HeaderDropdown: ${routeName}로 이동, driveId=${currentDriveId}`);
+        } else {
+          // driveId가 없는 경우 (드문 경우)
+          // @ts-ignore
+          navigation.replace(routeName);
+          console.log(`HeaderDropdown: ${routeName}로 이동, driveId 없음`);
+        }
       }, 150);
     }
   };
@@ -96,6 +113,7 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
         />
       </TouchableOpacity>
 
+      {/* 나머지 모달 코드는 그대로 유지 */}
       <Modal
         visible={isDropdownVisible}
         transparent={true}
