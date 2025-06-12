@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   totalScoreContainer: {
     alignItems: 'center',
     marginVertical: 15,
-    backgroundColor: '#F5F5FF',
+    backgroundColor: '#F1F5FD',
     borderRadius: 15,
     padding: 15,
   },

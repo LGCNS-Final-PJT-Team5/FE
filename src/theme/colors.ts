@@ -1,7 +1,7 @@
 // 앱 전체에서 사용할 색상 정의
 export const colors = {
   primary: '#4945FF',
-  neutralLight: '#F2F2FF',
+  neutralLight: '#F1F5FD',
   neutralDark: '#666666',
   timelineLine: '#D0D0D0',
   background: '#FFFFFF',

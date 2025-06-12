@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   historyItem: {
     flex: 1,
     backgroundColor: colors.neutralLight,
-    borderRadius: 20,
+    borderRadius: 40,
     paddingVertical: 16,
     paddingHorizontal: 20,
     flexDirection: 'row',
