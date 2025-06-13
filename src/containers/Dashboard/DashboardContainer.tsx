@@ -18,10 +18,10 @@ export default function DashboardContainer() {
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState(false); // 새로고침 상태 추가
 
   const fetchDashboard = async () => {
     try {
-      setLoading(true);
       const data = await dashboardService.getDashboard();
       console.log('대시보드 데이터 성공:', data);
       setDashboard(data);
@@ -46,14 +46,19 @@ export default function DashboardContainer() {
     }
   }, [user]);
 
-  // 탭 포커스될 때마다 데이터 새로고침
-  useFocusEffect(
-    React.useCallback(() => {
-      if (user) {
-        fetchDashboard();
-      }
-    }, [user])
-  );
+  // 새로고침 핸들러 추가
+  const handleRefresh = async () => {
+    try {
+      setLoading(true);
+      setRefreshing(true);
+      await fetchDashboard();
+      setRefreshing(false);
+    } catch (error) {
+      console.warn("새로고침 실패");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -171,6 +176,8 @@ export default function DashboardContainer() {
       setIsEnabled={setIsEnabled}
       dashboard={dashboard}
       navigation={navigation}
+      onRefresh={handleRefresh}
+      refreshing={refreshing}
     />
   );
 }

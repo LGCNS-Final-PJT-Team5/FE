@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, FlatList} from 'react-native';
+import {StyleSheet, FlatList, RefreshControl} from 'react-native';
 import DrivingScoreCard, {
   DrivingScoreCardProps,
 } from '../../components/Dashboard/DrivingScoreCard';
@@ -8,7 +8,7 @@ import DashboardHeader from '../../components/Dashboard/DashboardHeader';
 import {DashboardResponse, HomeStackParamList} from '../../types/dashboard';
 import {UserResponse} from '../../types/user';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import AppText from '../../components/common/AppText';
+import { colors } from '../../theme/colors';
 
 type DashboardScreenProps = {
   drivingReportData: DrivingScoreCardProps[];
@@ -17,6 +17,8 @@ type DashboardScreenProps = {
   setIsEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   dashboard: DashboardResponse;
   navigation: NativeStackNavigationProp<HomeStackParamList>;
+  onRefresh: () => void; // 새로고침 함수 prop 추가
+  refreshing: boolean;   // 새로고침 상태 prop 추가
 };
 
 export default function DashboardScreen({
@@ -26,6 +28,8 @@ export default function DashboardScreen({
   setIsEnabled,
   dashboard,
   navigation,
+  onRefresh,
+  refreshing
 }: DashboardScreenProps) {
   return (
     <FlatList
@@ -46,6 +50,17 @@ export default function DashboardScreen({
         </>
       }
       renderItem={({item}) => <DrivingScoreCard {...item} />}
+      // 새로고침 컨트롤 추가
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[colors.primary]} // Android
+          tintColor={colors.primary} // iOS
+          title="새로고침 중..." // iOS
+          titleColor={colors.neutralDark} // iOS
+        />
+      }
       ListFooterComponent={<WeeklyReportButton navigation={navigation} />}
     />
   );
