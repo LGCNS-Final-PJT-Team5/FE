@@ -1,99 +1,168 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Modive - 운전 습관 분석 서비스
 
-# Getting Started
+<p align="center">
+  <img src="./src/assets/modive_logo.svg" alt="Modive Logo" width="300" />
+</p>
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 📱 프로젝트 개요
 
-## Step 1: Start Metro
+Modive는 시뮬레이터를 통해 수집된 데이터를 기반으로 사용자의 운전습관을 분석하고 개선점을 제안하는 모바일 서비스입니다. 사용자는 직관적인 차트와 데이터 시각화를 통해 자신의 운전 스타일을 이해하고, 안전하고 친환경적인 운전을 위한 피드백을 받을 수 있습니다.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## ✨ 주요 기능
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **종합 운전 습관 분석**: 안전 운전, 사고 예방, 탄소 배출, 주의력 등 다각적 분석
+- **차트 시각화**: 다양한 차트 유형을 통한 직관적인 데이터 시각화
+- **Mobti (운전 성향 MBTI)**: 운전 데이터를 기반으로 사용자의 운전 성향을 16가지 유형으로 분류
+- **씨앗 보상 시스템**: 안전 운전과 친환경 주행 시 보상을 통한 사용자 참여 유도
+- **실시간 운전 알림**: 위험 운전 패턴 감지 시 실시간 알림
+- **주행 기록**: 과거 주행 기록 열람 및 상세 분석
 
-```sh
-# Using npm
-npm start
+## 🛠 기술 스택
 
-# OR using Yarn
-yarn start
-```
+### 프론트엔드
+- **언어**: TypeScript
+- **프레임워크**: React Native 0.79.1
+- **상태 관리**: Zustand
+- **차트 라이브러리**: react-native-gifted-charts, react-native-svg
+- **인증**: 카카오 소셜 로그인 (@react-native-seoul/kakao-login)
+- **API 통신**: Axios
+- **알림**: Firebase Cloud Messaging (FCM), Notifee
+- **테스트**: Jest, React Testing Library
 
-## Step 2: Build and run your app
+### 아키텍처
+- Container/Presenter 패턴 적용으로 비즈니스 로직과 UI 분리
+- 모듈형 컴포넌트 설계로 재사용성 극대화
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## ⚙️ 설치 및 설정
 
-### Android
+### 사전 요구사항
+- Node.js 18.x 이상
+- JDK 17
+- Android Studio / Xcode
+- CocoaPods (iOS)
 
-```sh
-# Using npm
-npm run android
+### 설치 과정
 
-# OR using Yarn
-yarn android
-```
+```bash
+# 저장소 클론
+git clone https://github.com/username/modive.git
+cd modive
 
-### iOS
+# 패키지 설치
+yarn install
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
+# iOS 의존성 설치 (iOS 개발 시)
+cd ios
 bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
 bundle exec pod install
-```
+cd ..
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+# 앱 실행 (Android)
+yarn android
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
+# 앱 실행 (iOS)
 yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 📊 주요 컴포넌트
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### 차트 컴포넌트
+- **CircleChart**: 원형 진행률 표시
+- **GaugeChart**: 반원형 계기판 형태의 점수 시각화
+- **AccelerationChart**: 급가속/급감속 이벤트 분석
+- **TurningChart**: 회전 패턴 분석
+- **SafeDistanceChart**: 차간 안전거리 유지 시각화
+- **SpeedDistributionPieChart**: 속도 분포도 시각화
 
-## Step 3: Modify your app
+### 화면 컴포넌트
+- **DrivingHistoryScreen**: 과거 주행 기록 목록
+- **DrivingDetailScreen**: 주행 상세 분석
+- **SafetyReportScreen**: 안전 운전 점수 분석
+- **CarbonEmissionReportScreen**: 탄소 배출 및 연비 분석
+- **AccidentPreventionReportScreen**: 사고 예방 점수 분석
+- **AttentionScoreReportScreen**: 주의력 점수 분석
 
-Now that you have successfully run the app, let's make changes!
+## 🚀 주요 구현 성과
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+1. **데이터 시각화**: 복잡한 주행 데이터를 다양한 차트로 시각화하여 직관적인 피드백 제공
+2. **Mobti 시스템**: 독자적인 운전 성향 MBTI 'Mobti'를 개발하여 사용자 참여도 향상
+3. **안정적인 네트워크 통신**: Axios 인터셉터를 활용한 토큰 갱신 및 오류 처리 로직 구현
+4. **실시간 알림 시스템**: FCM과 Notifee를 연동하여 앱 사용 여부와 무관하게 중요 알림 제공
+5. **테스트 자동화**: Jest와 React Testing Library를 활용한 컴포넌트 테스트 구현
+6. **코드 품질 관리**: ESLint와 Prettier를 활용한 일관된 코드 스타일 유지
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## 🔍 API 통신 구조
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+```typescript
+// API 통신 예시 - 안전 운전 점수 가져오기
+export const fetchSafetyReport = async (driveId: string) => {
+  try {
+    const response = await apiClient.get(`/api/drive/${driveId}/safety`);
+    return response.data;
+  } catch (error) {
+    console.error('안전 운전 점수 조회 실패:', error);
+    throw error;
+  }
+};
+```
 
-## Congratulations! :tada:
+## 📱 알림 시스템
 
-You've successfully run and modified your React Native App. :partying_face:
+Firebase Cloud Messaging과 Notifee를 활용하여 다양한 운전 이벤트(급가속, 급감속, 차선이탈 등)에 대한 실시간 알림을 제공합니다. 백그라운드와 포그라운드 상태에 따른 알림 처리 로직이 구현되어 있습니다.
 
-### Now what?
+```typescript
+// 알림 채널 생성
+const createNotificationChannels = async () => {
+  const channels = [
+    {id: 'crash', name: '충돌 알림', sound: 'crash'},
+    {id: 'safedistance', name: '안전거리 알림', sound: 'safedistance'},
+    // ...더 많은 알림 채널
+  ];
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+  for (const channel of channels) {
+    await notifee.createChannel({
+      id: channel.id,
+      name: channel.name,
+      sound: channel.id,
+      importance: AndroidImportance.HIGH,
+    });
+  }
+};
+```
 
-# Troubleshooting
+## ✅ 테스트
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+Jest와 React Testing Library를 활용하여 주요 컴포넌트에 대한 단위 테스트를 구현했습니다.
 
-# Learn More
+```bash
+# 테스트 실행
+yarn test
 
-To learn more about React Native, take a look at the following resources:
+# 커버리지 리포트 생성
+yarn test --coverage
+```
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 📋 프로젝트 구조
 
-# FE
+```
+modive/
+├── src/
+│   ├── components/     # 재사용 가능한 UI 컴포넌트
+│   │   ├── common/     # 공통 컴포넌트
+│   │   └── Driving/    # 운전 관련 컴포넌트
+│   ├── containers/     # 비즈니스 로직 컨테이너
+│   ├── screens/        # 화면 컴포넌트
+│   ├── services/       # API 서비스
+│   ├── store/          # Zustand 상태 관리
+│   ├── theme/          # 테마 및 스타일 
+│   ├── types/          # TypeScript 타입 정의
+│   └── utils/          # 유틸리티 함수
+├── __tests__/          # 테스트 코드
+├── android/            # Android 네이티브 코드
+└── ios/                # iOS 네이티브 코드
+```
+
+
+---
+
+© 2025 Modive Team. All Rights Reserved.
