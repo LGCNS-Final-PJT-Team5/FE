@@ -32,7 +32,7 @@ const LaneDepartureChart: React.FC<LaneDepartureChartProps> = ({ events, height 
   // 시작/종료 시간
   const startTime = timeToMinutes(sortedEvents[0]?.time) || 0;
   const endTime = timeToMinutes(sortedEvents[sortedEvents.length - 1]?.time) || startTime + 60;
-  const timeRange = Math.max(endTime - startTime, 60);
+  const timeRange = Math.max(endTime - startTime, 5);
   
   // 가상의 차선 움직임 (왼쪽/오른쪽 이탈 시뮬레이션)
   const generateCarPath = () => {
@@ -122,9 +122,10 @@ const LaneDepartureChart: React.FC<LaneDepartureChartProps> = ({ events, height 
           const x = ((eventMinute - startTime) / timeRange) * width;
           const isLeftDeparture = index % 2 === 0; // 시뮬레이션: 짝/홀수 인덱스에 따라 왼쪽/오른쪽 이탈
           
+          // 수정된 부분: 빨간점들을 도로 가장자리나 내부에 더 가깝게 배치
           const iconY = isLeftDeparture ? 
-            roadY - 10 : // 왼쪽 차선 이탈
-            roadY + roadHeight + 10; // 오른쪽 차선 이탈
+            roadY + laneHeight * 0.5 : // 왼쪽 차선 이탈 (첫번째 차선 중간)
+            roadY + roadHeight - laneHeight * 0.5; // 오른쪽 차선 이탈 (마지막 차선 중간)
           
           return (
             <G key={`lane-event-${index}`}>
