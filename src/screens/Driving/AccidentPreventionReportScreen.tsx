@@ -33,6 +33,8 @@ interface AccidentPreventionReportScreenProps {
   currentFeedback: string;
   onTabChange: (tab: string) => void;
   onBackPress: () => void;
+  driveStartTime: string; // 주행 시작 시간
+  driveEndTime: string;   // 주행 종료 시간
 }
 
 const AccidentPreventionReportScreen: React.FC<AccidentPreventionReportScreenProps> = ({
@@ -48,7 +50,9 @@ const AccidentPreventionReportScreen: React.FC<AccidentPreventionReportScreenPro
   followingDistanceScore,
   currentFeedback,
   onTabChange,
-  onBackPress
+  onBackPress,
+  driveStartTime,
+  driveEndTime
 }) => {
   
   // 반응속도 탭 렌더링
@@ -67,13 +71,20 @@ const AccidentPreventionReportScreen: React.FC<AccidentPreventionReportScreenPro
         </Text>
 
         {/* 반응 속도 차트 컴포넌트 활용 */}
-        <ReactionSpeedChart events={reactionEvents} height={200} />
+        <ReactionSpeedChart 
+          events={reactionEvents} 
+          height={200}
+          score={reactionScore}
+          driveStartTime={driveStartTime} // 추가: 주행 시작 시간 전달
+          driveEndTime={driveEndTime}     // 추가: 주행 종료 시간 전달 
+        />
         
         {/* 이벤트 목록 컴포넌트 활용 */}
         <EventsList 
           events={reactionEvents} 
           title="반응 지연 감지 시간" 
-          showDuration={true} 
+          showDuration={true}
+          maxVisibleItems={10} // 추가: 한 번에 표시할 최대 아이템 수 제한
         />
       </View>
     );

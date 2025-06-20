@@ -13,6 +13,7 @@ import DrivingHistoryChart from '../../components/Driving/DrivingHistoryChart';
 import { DriveHistoryItem } from '../../types/driving';
 import { colors } from '../../theme/colors';
 import AppText from '../../components/common/AppText';
+import { ProfilerWrapper } from '../../utils/profiler';
 
 interface DrivingHistoryScreenProps {
   driveHistory: DriveHistoryItem[];
@@ -53,6 +54,33 @@ const DrivingHistoryScreen: React.FC<DrivingHistoryScreenProps> = ({
     );
   }
 
+  // 리스트 렌더링 로직은 별도 함수로 분리
+  const renderDrivingList = () => (
+    <FlatList
+      data={driveHistory}
+      renderItem={({ item }) => (
+        <DrivingHistoryItem 
+          item={item} 
+          onPress={() => handleDriveItemPress(item.driveId)} 
+        />
+      )}
+      keyExtractor={(item) => item.driveId}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.listContentContainer}
+      // 새로고침 컨트롤 추가
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[colors.primary]} // Android
+          tintColor={colors.primary} // iOS
+          title="새로고침 중..." // iOS
+          titleColor={colors.neutralDark} // iOS
+        />
+      }
+    />
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
@@ -76,29 +104,14 @@ const DrivingHistoryScreen: React.FC<DrivingHistoryScreenProps> = ({
         
         <View style={styles.historyListContainer}>
           <View style={styles.fullTimelineLine} />
-          <FlatList
-            data={driveHistory ?? []}
-            renderItem={({ item }) => (
-              <DrivingHistoryItem 
-                item={item} 
-                onPress={handleDriveItemPress} 
-              />
-            )}
-            keyExtractor={item => item.driveId}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContentContainer}
-            // 새로고침 컨트롤 추가
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[colors.primary]} // Android
-                tintColor={colors.primary} // iOS
-                title="새로고침 중..." // iOS
-                titleColor={colors.neutralDark} // iOS
-              />
-            }
-          />
+          <ProfilerWrapper 
+            id="driving-history-list" 
+            component="DrivingHistoryScreen"
+            // 리스트는 항목 수에 따라 렌더링 시간이 달라질 수 있음
+            warnThreshold={30} 
+          >
+            {renderDrivingList()}
+          </ProfilerWrapper>
         </View>
       </View>
     </SafeAreaView>

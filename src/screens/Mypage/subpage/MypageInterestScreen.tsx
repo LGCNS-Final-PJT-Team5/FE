@@ -22,7 +22,7 @@ export default function MypageInterestScreen({ value, setValue, setInterest }: I
     <View style={styles.container}>
       <RegisterHeader
         title={'관심 있는 항목을 선택해주세요.'}
-        content={'선택한 관심사를 중심으로 리포트를 구성해드릴게요.'}
+        content={'선택한 관심사를 중심으로 리포트를 구성해드릴게요. 변경된 관심사는 다음 주간 주행 리포트부터 반영됩니다.'}
         top={true}
       />
       <InterestCategory
