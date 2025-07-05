@@ -11,6 +11,7 @@
 node_modules/
 npm-debug.log*
 yarn-error.log*
+package-lock.json
 
 # Metro
 .metro-cache/
@@ -20,8 +21,8 @@ yarn-error.log*
 android/.gradle/
 android/.idea/
 android/.cxx/
-android/**/app/.cxx/  # 모든 app/.cxx 폴더도 제외
-android/app/.cxx/     # 명확한 경로 지정
+android/**/app/.cxx/ 
+android/app/.cxx/   
 android/app/build/
 android/build/
 android/local.properties
@@ -35,6 +36,7 @@ ios/build/
 ios/DerivedData/
 ios/*.xcworkspace
 ios/*.xcodeproj/project.xcworkspace/
+ios/Podfile.lock
 ios/*.pbxuser
 ios/*.mode1v3
 ios/*.mode2v3

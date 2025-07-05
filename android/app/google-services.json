@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "326239890936",
+    "project_id": "modive-8ff3c",
+    "storage_bucket": "modive-8ff3c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326239890936:android:26350198062e8b66657a0d",
+        "android_client_info": {
+          "package_name": "com.modive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApWDYByowROK-SK92W0GcQ8uJrGBuJmR8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326239890936:android:638690b02a481f85657a0d",
+        "android_client_info": {
+          "package_name": "com.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApWDYByowROK-SK92W0GcQ8uJrGBuJmR8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
